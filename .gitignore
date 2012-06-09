@@ -44,3 +44,7 @@ Thumbs.db
 #Eclipse generated files #
 ####################
 dev/.metadata
+/dev/AppModel/dist/
+/dev/AppModel/build/
+/dev/Desktop/build/
+/dev/Desktop/dist/
