@@ -2,16 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-/*
- * FrmEmular.java
- *
- * Created on Jun 9, 2012, 1:14:53 PM
- */
 package com.carreras.common.emulador;
 
-import arduino.entidades.Tiempo;
-import arduino.entidades.Tiempos;
+import com.carreras.common.util.StringUtil;
+import com.carreras.common.util.TiemposHelper;
+
 
 /**
  *
@@ -40,7 +35,12 @@ public class FrmEmulador extends javax.swing.JFrame {
         lblEstado.setText(sent?"Mensaje Enviado":"Mensaje No Enviado");
     }
     private void autoGeneraTiempos(){
-        Double[] tiempos = MensajeCarril.getTiemposAleatorios();
+        //si el final esta ingresado --> generar los dos primeros.
+        String tiempoFin = txtFin.getText();
+        Double[] tiempos = TiemposHelper.getTiemposAleatorios();
+        if(!StringUtil.isEmpty(tiempoFin)){
+            tiempos = TiemposHelper.getTiemposTiempoFin(Double.parseDouble(tiempoFin));
+        }
         txtReaccion.setText(tiempos[0].toString());
         txtCienMetros.setText(tiempos[1].toString());
         txtFin.setText(tiempos[2].toString());

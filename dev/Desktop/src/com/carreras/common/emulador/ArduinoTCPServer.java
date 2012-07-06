@@ -6,17 +6,13 @@ package com.carreras.common.emulador;
 
 import arduino.entidades.Carril;
 import arduino.entidades.Datos;
-import arduino.entidades.Tiempo;
-import arduino.entidades.Tiempos;
 import arduino.eventos.ArduinoEvent;
 import arduino.eventos.ArduinoEventListener;
 import arduino.eventos.RespuestaEvent;
 import com.carreras.common.config.Configuracion;
 import com.carreras.common.logger.CarrerasLogger;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -95,18 +91,6 @@ public class ArduinoTCPServer extends arduino.Arduino implements Runnable {
             }
         }
     }
-
-//    private void parseMessage(String message) {
-//        RespuestaEvent rta = new RespuestaEvent(this, RespuestaEvent.CARRIL);
-////        rta.setDatos(new Carril(SINGLE_INSTANCE_NETWORK_SOCKET_PORT, null));
-//        if (COMANDO_CARRIL1.trim().equals(message.trim())) {
-//            rta.setDatos(new Carril(1, getTiemposAleatorios()));
-//        } else if (COMANDO_CARRIL2.trim().equals(message.trim())) {
-//            rta.setDatos(new Carril(2, getTiemposAleatorios()));
-//        }
-//        arduino_event_listener.Estado_Datos(rta);
-//
-//    }
 
     private void parseMessage(MensajeCarril mensajeCarril) {
         Carril c = mensajeCarril.getCarril();
