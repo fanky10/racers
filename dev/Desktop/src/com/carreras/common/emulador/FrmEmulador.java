@@ -18,9 +18,6 @@ public class FrmEmulador extends javax.swing.JFrame {
     public FrmEmulador() {
         initComponents();
     }
-    private void init(){
-        
-    }
     private Double[] getTiemposIngresados(){
         Double[] tiempos = new Double[3];
         tiempos[0] = Double.parseDouble(txtReaccion.getText());
