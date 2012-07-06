@@ -48,3 +48,5 @@ dev/.metadata
 /dev/AppModel/build/
 /dev/Desktop/build/
 /dev/Desktop/dist/
+/dev/AppModel/nbproject/private/
+/dev/Desktop/nbproject/private/
