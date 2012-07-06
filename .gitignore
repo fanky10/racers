@@ -50,3 +50,6 @@ dev/.metadata
 /dev/Desktop/dist/
 /dev/AppModel/nbproject/private/
 /dev/Desktop/nbproject/private/
+dev/Desktop/nbproject/private/config.properties
+
+dev/Desktop/nbproject/configs/tcpArd.properties
