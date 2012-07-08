@@ -50,3 +50,7 @@ dev/.metadata
 /dev/Desktop/dist/
 /dev/Desktop/nbproject/private/
 /dev/AppModel/nbproject/private/
+
+#deployment files #
+###############
+deploy/*

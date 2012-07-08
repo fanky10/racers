@@ -22,9 +22,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Component id="lblEstado" alignment="0" pref="544" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="chkTiempoFinAleatorio" alignment="0" pref="504" max="32767" attributes="0"/>
                   <Component id="btnCarril2" alignment="1" pref="504" max="32767" attributes="0"/>
                   <Component id="btnAutoGen" alignment="0" pref="504" max="32767" attributes="1"/>
                   <Component id="jPanel1" alignment="0" pref="504" max="32767" attributes="1"/>
@@ -32,7 +34,6 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="lblEstado" alignment="0" pref="544" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -40,7 +41,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <Component id="chkTiempoFinAleatorio" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="btnAutoGen" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnCarril1" min="-2" max="-2" attributes="0"/>
@@ -117,6 +120,11 @@
     <Component class="javax.swing.JLabel" name="lblEstado">
       <Properties>
         <Property name="text" type="java.lang.String" value="Estado:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkTiempoFinAleatorio">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tiempo de Fin Aleatorio"/>
       </Properties>
     </Component>
   </SubComponents>

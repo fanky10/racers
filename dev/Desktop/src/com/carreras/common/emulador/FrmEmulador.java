@@ -7,7 +7,6 @@ package com.carreras.common.emulador;
 import com.carreras.common.util.StringUtil;
 import com.carreras.common.util.TiemposHelper;
 
-
 /**
  *
  * @author fanky
@@ -18,32 +17,38 @@ public class FrmEmulador extends javax.swing.JFrame {
     public FrmEmulador() {
         initComponents();
     }
-    private Double[] getTiemposIngresados(){
+
+    private Double[] getTiemposIngresados() {
         Double[] tiempos = new Double[3];
         tiempos[0] = Double.parseDouble(txtReaccion.getText());
         tiempos[1] = Double.parseDouble(txtCienMetros.getText());
         tiempos[2] = Double.parseDouble(txtFin.getText());
-        
+
         return tiempos;
     }
-    private void enviaTiempos(Integer nroCarril){
+
+    private void enviaTiempos(Integer nroCarril) {
         MensajeCarril mensajeCarril = new MensajeCarril(nroCarril, getTiemposIngresados());
         boolean sent = ArduinoTCPClient.sendCommand(mensajeCarril);
-        lblEstado.setText(sent?"Mensaje Enviado":"Mensaje No Enviado");
+        lblEstado.setText(sent ? "Mensaje Enviado" : "Mensaje No Enviado");
     }
-    private void autoGeneraTiempos(){
+
+    private void autoGeneraTiempos() {
         //si el final esta ingresado --> generar los dos primeros.
         String tiempoFin = txtFin.getText();
-        Double[] tiempos = TiemposHelper.getTiemposAleatorios();
-        if(!StringUtil.isEmpty(tiempoFin)){
+        Double[] tiempos = null;
+        if (chkTiempoFinAleatorio.isSelected() || StringUtil.isEmpty(tiempoFin)) {
+            tiempos = TiemposHelper.getTiemposAleatorios();   
+        }else {
             tiempos = TiemposHelper.getTiemposTiempoFin(Double.parseDouble(tiempoFin));
         }
         txtReaccion.setText(tiempos[0].toString());
         txtCienMetros.setText(tiempos[1].toString());
         txtFin.setText(tiempos[2].toString());
-        
-        
+
+
     }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -64,6 +69,7 @@ public class FrmEmulador extends javax.swing.JFrame {
         btnCarril1 = new javax.swing.JButton();
         btnCarril2 = new javax.swing.JButton();
         lblEstado = new javax.swing.JLabel();
+        chkTiempoFinAleatorio = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,26 +111,31 @@ public class FrmEmulador extends javax.swing.JFrame {
 
         lblEstado.setText("Estado:");
 
+        chkTiempoFinAleatorio.setText("Tiempo de Fin Aleatorio");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, btnCarril2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(btnAutoGen, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(btnCarril1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
-                .addContainerGap())
             .add(lblEstado, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, chkTiempoFinAleatorio, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .add(btnCarril2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnAutoGen, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnCarril1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
+                .add(5, 5, 5)
+                .add(chkTiempoFinAleatorio)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnAutoGen)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(btnCarril1)
@@ -188,6 +199,7 @@ public class FrmEmulador extends javax.swing.JFrame {
     private javax.swing.JButton btnAutoGen;
     private javax.swing.JButton btnCarril1;
     private javax.swing.JButton btnCarril2;
+    private javax.swing.JCheckBox chkTiempoFinAleatorio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
