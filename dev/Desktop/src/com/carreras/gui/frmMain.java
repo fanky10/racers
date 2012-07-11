@@ -40,7 +40,7 @@ public class frmMain extends javax.swing.JFrame {
         btnContinuarCarrera.setEnabled(false);
     }
     private void nueva_carrera(){
-        JFrame fc = new frmCarrera();
+        JFrame fc = new FrmTorneo();
         fc.setVisible(true);
         this.dispose();
     }

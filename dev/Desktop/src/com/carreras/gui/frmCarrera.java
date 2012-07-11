@@ -343,12 +343,12 @@ public class frmCarrera extends javax.swing.JFrame {
             }
         }
     }
-
-    private void decrementaRondasRestantes(InscriptoCompetencia inscriptoCompetencia) {
-        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
-            inscriptoCompetencia.decrementaRondasRestantes();
-        }
-    }
+//TODO: delete unused code
+//    private void decrementaRondasRestantes(InscriptoCompetencia inscriptoCompetencia) {
+//        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
+//            inscriptoCompetencia.decrementaRondasRestantes();
+//        }
+//    }
 
     private void muestraEstado(String mensaje) {
         CarrerasLogger.info(frmCarrera.class, mensaje);
