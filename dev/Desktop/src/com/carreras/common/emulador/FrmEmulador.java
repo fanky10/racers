@@ -65,11 +65,19 @@ public class FrmEmulador extends javax.swing.JFrame {
         txtCienMetros = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtFin = new javax.swing.JTextField();
+        lblEstado = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         btnAutoGen = new javax.swing.JButton();
         btnCarril1 = new javax.swing.JButton();
         btnCarril2 = new javax.swing.JButton();
-        lblEstado = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         chkTiempoFinAleatorio = new javax.swing.JCheckBox();
+        chkRotura = new javax.swing.JCheckBox();
+        chkAdelantamiento = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnLoad = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,12 +96,18 @@ public class FrmEmulador extends javax.swing.JFrame {
         jPanel1.add(jLabel3);
         jPanel1.add(txtFin);
 
+        lblEstado.setText("Estado:");
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.setLayout(new java.awt.GridLayout(0, 1));
+
         btnAutoGen.setText("AutoGen");
         btnAutoGen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAutoGenActionPerformed(evt);
             }
         });
+        jPanel2.add(btnAutoGen);
 
         btnCarril1.setText("Enviar a Carril 1");
         btnCarril1.addActionListener(new java.awt.event.ActionListener() {
@@ -101,6 +115,7 @@ public class FrmEmulador extends javax.swing.JFrame {
                 btnCarril1ActionPerformed(evt);
             }
         });
+        jPanel2.add(btnCarril1);
 
         btnCarril2.setText("Enviar a Carril 2");
         btnCarril2.addActionListener(new java.awt.event.ActionListener() {
@@ -108,40 +123,78 @@ public class FrmEmulador extends javax.swing.JFrame {
                 btnCarril2ActionPerformed(evt);
             }
         });
+        jPanel2.add(btnCarril2);
 
-        lblEstado.setText("Estado:");
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel3.setLayout(new java.awt.GridLayout(0, 1));
 
         chkTiempoFinAleatorio.setText("Tiempo de Fin Aleatorio");
+        jPanel3.add(chkTiempoFinAleatorio);
+
+        chkRotura.setText("Rotura de Auto");
+        jPanel3.add(chkRotura);
+
+        chkAdelantamiento.setText("Adelantamiento");
+        jPanel3.add(chkAdelantamiento);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        btnLoad.setText("Cargar Archivo");
+        btnLoad.setFocusable(false);
+        btnLoad.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnLoad.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnLoad);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(lblEstado, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, chkTiempoFinAleatorio, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(btnCarril2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnAutoGen, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnCarril1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
-                .addContainerGap())
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 424, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(20, 20, 20))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(lblEstado, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(5, 5, 5)
-                .add(chkTiempoFinAleatorio)
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnAutoGen)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnCarril1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(btnCarril2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(layout.createSequentialGroup()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 88, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 8, Short.MAX_VALUE)
                 .add(lblEstado))
         );
 
@@ -199,11 +252,19 @@ public class FrmEmulador extends javax.swing.JFrame {
     private javax.swing.JButton btnAutoGen;
     private javax.swing.JButton btnCarril1;
     private javax.swing.JButton btnCarril2;
+    private javax.swing.JButton btnLoad;
+    private javax.swing.JCheckBox chkAdelantamiento;
+    private javax.swing.JCheckBox chkRotura;
     private javax.swing.JCheckBox chkTiempoFinAleatorio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JTextField txtCienMetros;
     private javax.swing.JTextField txtFin;
