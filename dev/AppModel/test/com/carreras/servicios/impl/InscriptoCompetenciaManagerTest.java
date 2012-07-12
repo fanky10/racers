@@ -111,7 +111,7 @@ public class InscriptoCompetenciaManagerTest extends GeneralTest {
     }
     @Test
     public void testGetEstadoInscriptosCompetencia(){
-        List<InscriptoCompetencia> inscriptosCompetencia = inscriptoCompetenciaManager.getEstadoInscriptosCompetencia(inscriptoCompetencia.getCompetencia().getId(),
+        List<InscriptoCompetencia> inscriptosCompetencia = inscriptoCompetenciaManager.getEstadoInscriptosCompetenciaCarrera(inscriptoCompetencia.getCompetencia().getId(),
                 inscriptoCompetencia.getEstado(), inscriptoCompetencia.getCategoria().getId());
         assert (inscriptosCompetencia!=null && !inscriptosCompetencia.isEmpty());
     }

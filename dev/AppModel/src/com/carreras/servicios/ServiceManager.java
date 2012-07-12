@@ -50,7 +50,7 @@ public interface ServiceManager {
     public List<Inscripto> getAllInscriptosBut(List<InscriptoCompetencia> inscriptosUsados);
 
     public Categoria getCategoria(Integer id);
-    
+
     public Integer saveCategoria(Categoria categoria);
 
     /**
@@ -82,5 +82,7 @@ public interface ServiceManager {
 
     public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Competencia competencia, EstadoInscriptoCompetenciaCarrera estado);
 
-    public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Competencia competenciaActual, EstadoInscriptoCompetenciaCarrera estadoInscriptoCompetenciaCarrera, Categoria categoria);
+    public List<InscriptoCompetencia> getEstadoInscriptosCompetenciaCarrera(Competencia competenciaActual, EstadoInscriptoCompetenciaCarrera estadoInscriptoCompetenciaCarrera, Categoria categoria);
+
+    public List<InscriptoCompetencia> getEstadoCompetencia(Competencia competencia, Categoria categoria, EstadoCompetencia estado);
 }

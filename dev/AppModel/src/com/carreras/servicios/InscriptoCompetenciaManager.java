@@ -5,6 +5,7 @@
 package com.carreras.servicios;
 
 import com.carreras.dominio.modelo.Categoria;
+import com.carreras.dominio.modelo.EstadoCompetencia;
 import com.carreras.dominio.modelo.EstadoInscriptoCompetenciaCarrera;
 import com.carreras.dominio.modelo.InscriptoCompetencia;
 import java.util.List;
@@ -32,9 +33,10 @@ public interface InscriptoCompetenciaManager {
     public List<InscriptoCompetencia> getInscriptosCompetenciaLibre(Integer idCompetencia);
 
     public List<Categoria> getCategoriasEnUso(Integer idCompetencia);
-    
+
     public List<InscriptoCompetencia> getAllTorneo(Integer idTorneo);
 
-    public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Integer idCompetencia, EstadoInscriptoCompetenciaCarrera estadoInscriptoCompetenciaCarrera, Integer idCategoria);
-    
+    public List<InscriptoCompetencia> getEstadoInscriptosCompetenciaCarrera(Integer idCompetencia, EstadoInscriptoCompetenciaCarrera estadoInscriptoCompetenciaCarrera, Integer idCategoria);
+
+    public List<InscriptoCompetencia> getEstadoCompetencia(Integer idCompetencia, Integer idCategoria, EstadoCompetencia estado);
 }

@@ -10,6 +10,7 @@ import com.carreras.dominio.modelo.Carril;
 import com.carreras.dominio.modelo.Categoria;
 import com.carreras.dominio.modelo.Competencia;
 import com.carreras.dominio.modelo.Corredor;
+import com.carreras.dominio.modelo.EstadoCompetencia;
 import com.carreras.dominio.modelo.EstadoInscriptoCompetenciaCarrera;
 import com.carreras.dominio.modelo.Inscripto;
 import com.carreras.dominio.modelo.InscriptoCompetencia;
@@ -39,6 +40,7 @@ import java.util.List;
 public class ServiceManagerImpl implements ServiceManager {
     //managers! :D
     //instanciados segun la implementacion que uno guste (:
+
     private AutoManager autoManager = new AutoManagerImpl();
     private CategoriaManager categoriaManager = new CategoriaManagerImpl();
     private CorredorManager corredorManager = new CorredorManagerImpl();
@@ -92,10 +94,10 @@ public class ServiceManagerImpl implements ServiceManager {
     @Override
     public List<Inscripto> getAllInscriptosBut(List<InscriptoCompetencia> inscriptosUsados) {
         List<Integer> ids = new ArrayList<Integer>();
-        for(InscriptoCompetencia ic: inscriptosUsados){
+        for (InscriptoCompetencia ic : inscriptosUsados) {
             ids.add(ic.getInscripto().getId());
         }
-        return inscriptoManager.getAllInscriptosBut((Integer[])ids.toArray(new Integer[0]));
+        return inscriptoManager.getAllInscriptosBut((Integer[]) ids.toArray(new Integer[0]));
     }
 
     @Override
@@ -132,6 +134,7 @@ public class ServiceManagerImpl implements ServiceManager {
     public Tiempo getTiempo(Carril carril, TipoTiempo tipoTiempo) {
         return tiempoManager.getTiempo(carril.getId(), tipoTiempo.getId());
     }
+
     /**
      * ahora se usa, el getCompetencia(compActual, categoriaSeleccionada)
      * @param competencia
@@ -141,11 +144,11 @@ public class ServiceManagerImpl implements ServiceManager {
     @Deprecated
     @Override
     public List<InscriptoCompetencia> getInscriptosCompetencia(Competencia competencia) {
-        
-        if(competencia.getTipoCompetencia() == TipoCompetencia.LIBRE){
+
+        if (competencia.getTipoCompetencia() == TipoCompetencia.LIBRE) {
             return inscriptoCompetenciaManager.getInscriptosCompetenciaLibre(competencia.getId());
-        }else if(competencia.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA){
-            List<InscriptoCompetencia> inscriptos =  inscriptoCompetenciaManager.getEstadoInscriptosCompetencia(competencia.getId(),EstadoInscriptoCompetenciaCarrera.GANADOR);
+        } else if (competencia.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA) {
+            List<InscriptoCompetencia> inscriptos = inscriptoCompetenciaManager.getEstadoInscriptosCompetencia(competencia.getId(), EstadoInscriptoCompetenciaCarrera.GANADOR);
             return inscriptos;
         }
         //TODO: traer a todos (:
@@ -153,7 +156,7 @@ public class ServiceManagerImpl implements ServiceManager {
 //            //TODO: check nro.ronda o algo asi
 //            return new ArrayList<InscriptoCompetencia>();
 //        }
-        
+
         return new ArrayList<InscriptoCompetencia>();
     }
 
@@ -161,11 +164,11 @@ public class ServiceManagerImpl implements ServiceManager {
     public void updateInscriptoCompetencia(InscriptoCompetencia inscriptoCompetencia) {
         inscriptoCompetenciaManager.update(inscriptoCompetencia);
     }
-    
+
     @Override
     public Categoria getCategoria(Torneo torneo, Inscripto inscripto) {
         Tiempo tiempo = tiempoManager.getMejorTiempo(torneo.getId(), inscripto.getId());
-        if(tiempo == null){
+        if (tiempo == null) {
             //no participo
             return categoriaManager.getOne(Categoria.ID_CATEGORIA_NO_CORRE);
         }
@@ -201,9 +204,15 @@ public class ServiceManagerImpl implements ServiceManager {
     public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Competencia competencia, EstadoInscriptoCompetenciaCarrera estado) {
         return inscriptoCompetenciaManager.getEstadoInscriptosCompetencia(competencia.getId(), estado);
     }
+
     @Override
-    public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Competencia competencia, EstadoInscriptoCompetenciaCarrera estado,Categoria categoria){
-        return inscriptoCompetenciaManager.getEstadoInscriptosCompetencia(competencia.getId(), estado,categoria.getId());
+    public List<InscriptoCompetencia> getEstadoInscriptosCompetenciaCarrera(Competencia competencia, EstadoInscriptoCompetenciaCarrera estado, Categoria categoria) {
+        return inscriptoCompetenciaManager.getEstadoInscriptosCompetenciaCarrera(competencia.getId(), estado, categoria.getId());
+    }
+
+    @Override
+    public List<InscriptoCompetencia> getEstadoCompetencia(Competencia competencia, Categoria categoria, EstadoCompetencia estado) {
+        return inscriptoCompetenciaManager.getEstadoCompetencia(competencia.getId(), categoria.getId(), estado);
     }
 
     @Override

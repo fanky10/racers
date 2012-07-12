@@ -6,6 +6,7 @@ package com.carreras.servicios.impl;
 
 import com.carreras.config.HibernateUtil;
 import com.carreras.dominio.modelo.Categoria;
+import com.carreras.dominio.modelo.EstadoCompetencia;
 import com.carreras.dominio.modelo.EstadoInscriptoCompetenciaCarrera;
 import com.carreras.dominio.modelo.InscriptoCompetencia;
 import com.carreras.servicios.InscriptoCompetenciaManager;
@@ -19,7 +20,7 @@ import org.hibernate.Session;
  * @author Fanky10 <fanky10@gmail.com>
  */
 public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaManager {
-    
+
     @Override
     public Integer save(InscriptoCompetencia inscriptoCompetencia) {
         Session session = null;
@@ -35,6 +36,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
         }
         return null;
     }
+
     @Override
     public void update(InscriptoCompetencia inscriptoCompetencia) {
         Session session = null;
@@ -87,12 +89,10 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
         }
         return null;
     }
-    
-    
 
     @Override
     public List<InscriptoCompetencia> getInscriptosCompetencia(Integer idCompetencia) {
-        return getEstadoInscriptosCompetencia(idCompetencia,null);
+        return getEstadoInscriptosCompetencia(idCompetencia, null);
     }
 
     @Override
@@ -103,11 +103,11 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
             StringBuilder sbQuery = new StringBuilder();
             sbQuery.append(" FROM " + InscriptoCompetencia.class.getName() + " i");
             sbQuery.append(" WHERE i.competencia.id =" + idCompetencia);
-            if(estado!=null){
+            if (estado != null) {
                 sbQuery.append(" AND i.estado =" + estado.ordinal());
             }
             sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
-            
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
@@ -119,7 +119,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
     }
 
     @Override
-    public List<InscriptoCompetencia> getInscriptosCompetencia(Integer idCompetencia, Integer idCategoria){
+    public List<InscriptoCompetencia> getInscriptosCompetencia(Integer idCompetencia, Integer idCategoria) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -128,7 +128,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
             sbQuery.append(" WHERE i.competencia.id =" + idCompetencia);
             sbQuery.append(" AND i.categoria.id =" + idCategoria);
             sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
-            
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
@@ -138,8 +138,9 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
         }
         return null;
     }
+
     @Override
-    public List<InscriptoCompetencia> getInscriptosCompetenciaLibre(Integer idCompetencia){
+    public List<InscriptoCompetencia> getInscriptosCompetenciaLibre(Integer idCompetencia) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -148,7 +149,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
             sbQuery.append(" WHERE i.competencia.id =" + idCompetencia);
             sbQuery.append(" AND i.rondasRestantes > 1");
             sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
-            
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
@@ -158,8 +159,8 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
         }
         return null;
     }
-    
-    public List<Categoria> getCategoriasEnUso(Integer idCompetencia){
+
+    public List<Categoria> getCategoriasEnUso(Integer idCompetencia) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -168,9 +169,9 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
             sbQuery.append(" WHERE ic.competencia.id =" + idCompetencia);
             //sbQuery.append(" GROUP BY ic.categoria.id");
             sbQuery.append(" ORDER BY ic.categoria.descripcion");
-            
-            
-            
+
+
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
@@ -180,7 +181,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
         }
         return null;
     }
-    
+
     @Override
     public List<InscriptoCompetencia> getAllTorneo(Integer idTorneo) {
         Session session = null;
@@ -191,7 +192,7 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
             sbQuery.append(" WHERE i.competencia.torneo.id =" + idTorneo);
             sbQuery.append(" GROUP BY i.inscripto.id");
             sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
-            
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
@@ -203,19 +204,43 @@ public class InscriptoCompetenciaManagerImpl implements InscriptoCompetenciaMana
     }
 
     @Override
-    public List<InscriptoCompetencia> getEstadoInscriptosCompetencia(Integer idCompetencia, EstadoInscriptoCompetenciaCarrera estado, Integer idCategoria) {
+    public List<InscriptoCompetencia> getEstadoInscriptosCompetenciaCarrera(Integer idCompetencia, EstadoInscriptoCompetenciaCarrera estado, Integer idCategoria) {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             StringBuilder sbQuery = new StringBuilder();
             sbQuery.append(" FROM " + InscriptoCompetencia.class.getName() + " i");
             sbQuery.append(" WHERE i.competencia.id =" + idCompetencia);
-            if(estado!=null){
+            if (estado != null) {
                 sbQuery.append(" AND i.estado =" + estado.ordinal());
             }
             sbQuery.append(" AND i.categoria.id =" + idCategoria);
             sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
-            
+
+            Query q = session.createQuery(sbQuery.toString());
+            return q.list();
+
+        } catch (HibernateException he) {
+            he.printStackTrace();
+        } finally {
+        }
+        return null;
+    }
+
+    @Override
+    public List<InscriptoCompetencia> getEstadoCompetencia(Integer idCompetencia, Integer idCategoria, EstadoCompetencia estado) {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            StringBuilder sbQuery = new StringBuilder();
+            sbQuery.append(" FROM " + InscriptoCompetencia.class.getName() + " i");
+            sbQuery.append(" WHERE i.competencia.id =" + idCompetencia);
+            if (estado != null) {
+                sbQuery.append(" AND i.estadoCompetencia =" + estado.ordinal());
+            }
+            sbQuery.append(" AND i.categoria.id =" + idCategoria);
+            sbQuery.append(" ORDER BY i.estado, i.categoria.descripcion");
+
             Query q = session.createQuery(sbQuery.toString());
             return q.list();
 
