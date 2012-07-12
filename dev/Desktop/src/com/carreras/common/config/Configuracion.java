@@ -32,7 +32,7 @@ public class Configuracion {
     //system path as default user dir
     private static String pathConfig=null;
     private static Configuracion singleConfiguration = null;
-    public static boolean AUTOINICIA_CARRERA = true;
+    private static final String CONFIGURATION_PROPERTIES_FILE = "configuration.properties";
     public static final String PROPERTIES_PACKAGE = "/com/carreras/properties/";
     public static Configuracion getInstance(){
         if(singleConfiguration == null){
@@ -55,9 +55,28 @@ public class Configuracion {
             Properties properties = new Properties();
             properties.load(is);
             return properties.getProperty(key);
-        }catch(java.io.IOException e){
+        }catch(Exception e){
             //ignored --que mas puedo hacer..?
             return default_value;
+        }finally{
+            try{
+                if(is!=null)
+                    is.close();
+            }catch(IOException ex){
+                //ignored --que mas puedo hacer..?
+            }
+        }
+    }
+    private static String getConfigurationValue(String propertyFile,String key, String defaultValue){
+        InputStream is = null;
+        try{
+            is = new FileInputStream(propertyFile);
+            Properties properties = new Properties();
+            properties.load(is);
+            return properties.getProperty(key);
+        }catch(java.io.IOException e){
+            //ignored --que mas puedo hacer..?
+            return defaultValue;
         }finally{
             try{
                 if(is!=null)
@@ -70,6 +89,24 @@ public class Configuracion {
     
     public static String getCurrentSysVersion(){
         return getCurrentInnerValue(PROPERTIES_PACKAGE + "versioning.properties", "version", "0.0");
+    }
+    public static Boolean isAutoiniciaCarrera(){
+        final String key = "autoinicia_carrera";
+        final String defaultValue = "0";//false
+        String value = getCurrentInnerValue(PROPERTIES_PACKAGE + CONFIGURATION_PROPERTIES_FILE, key, null);
+        if(value==null){
+            value = getConfigurationValue(CONFIGURATION_PROPERTIES_FILE, key, defaultValue);
+        }
+        return value.equals("1");
+    }
+    public static Boolean isMuestraMensajes(){
+        final String key = "muestra_mensajes";
+        final String defaultValue = "0";//false
+        String value = getCurrentInnerValue(PROPERTIES_PACKAGE + CONFIGURATION_PROPERTIES_FILE, key, null);
+        if(value==null){
+            value = getConfigurationValue(CONFIGURATION_PROPERTIES_FILE, key, defaultValue);
+        }
+        return value.equals("1");
     }
     
     private int cant_carriles; //por default
@@ -113,10 +150,6 @@ public class Configuracion {
             }
             if(Utilidades.isKeyFound(a, "car_debug")){
                 CarrerasLogger.DEBUG = Utilidades.getValue(a, "car_debug").equals("1");
-            }
-            
-            if(Utilidades.isKeyFound(a, "init_carr")){
-                AUTOINICIA_CARRERA = Utilidades.getValue(a, "init_carr").equals("1");
             }
             if(Utilidades.isKeyFound(a, "ard_instance")){
                 ArduinoManager.ARDUINO_INSTANCE = Integer.parseInt(Utilidades.getValue(a, "ard_instance"));

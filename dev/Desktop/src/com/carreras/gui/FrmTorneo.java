@@ -10,11 +10,6 @@
  */
 package com.carreras.gui;
 
-import arduino.entidades.Adelantamiento;
-import arduino.entidades.Datos;
-import arduino.entidades.Rotura;
-import arduino.entidades.Tiempo;
-import arduino.entidades.Tiempos;
 import arduino.eventos.ArduinoEvent;
 import arduino.eventos.ArduinoEventListener;
 import arduino.eventos.RespuestaEvent;
@@ -35,6 +30,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
@@ -52,12 +48,12 @@ import javax.swing.table.TableCellRenderer;
 public class FrmTorneo extends javax.swing.JFrame {
 
     private static final String TITLE = "Carreras v" + Configuracion.getCurrentSysVersion();
-    private static boolean AUTO_INICIA_CARRERA = true;
+    private static boolean AUTO_INICIA_CARRERA = Configuracion.isAutoiniciaCarrera();
+    private static boolean MUESTRA_MENSAJES = Configuracion.isMuestraMensajes();
     private static final int COLUMNA_CORREDOR_ESTADO = 0;
     private static final int COLUMNA_CORREDOR_CATEGORIA = 2;
     //es una unica instancia para toda la competencia
     private ArduinoManager ardmgr;
-    private Carrera carreraActual;
     private CompetenciaController competenciaController = new CompetenciaController();
 
     /** Creates new form FrmTorneo */
@@ -145,10 +141,13 @@ public class FrmTorneo extends javax.swing.JFrame {
 
     private void proximaCarrera() {
         //reinicio att.
-        carreraActual = null;
         Map modelMap = competenciaController.proximaCarrera();
         Boolean finCarreras = (Boolean) modelMap.get("finCarreras");
         if (finCarreras) {
+            if (!MUESTRA_MENSAJES) {
+                nuevaRonda();
+                return;
+            }
             int status = javax.swing.JOptionPane.showConfirmDialog(this, "Se ha finalizado con todas las carreras disponibles \nGenere una nueva ronda o competencia", "Seleccione Accion", javax.swing.JOptionPane.OK_CANCEL_OPTION);
             if (status == javax.swing.JOptionPane.OK_OPTION) {
                 nuevaRonda();
@@ -159,22 +158,19 @@ public class FrmTorneo extends javax.swing.JFrame {
         recargaCarriles();
         recargaTblTiempos();
     }
-    //FIXME: i dont know what's wrong!
+
     private void nuevaRonda() {
         Categoria categoriaSeleccionada = (Categoria) cmbCategoria.getSelectedItem();
         Map modelMap = competenciaController.nuevaRonda(categoriaSeleccionada);
         InscriptoCompetencia ganador = (InscriptoCompetencia) modelMap.get("ganadorCompetencia");
         Competencia competenciaActual = competenciaController.getCompetenciaActual();
         List<InscriptoCompetencia> inscriptosCorriendo = competenciaController.getInscriptosCorriendo();
-        if(competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && competenciaActual.getNumeroRonda() == 3){
+        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && competenciaActual.getNumeroRonda() == 3) {
             javax.swing.JOptionPane.showMessageDialog(rootPane, "Estamos en la final!!");
-        }
-        if(ganador!=null){
-            javax.swing.JOptionPane.showMessageDialog(rootPane, "el ganador es: "+ganador.getInscripto().getCorredor().getNombre());
-            //con auto etc.
-            //TODO: eliminar la categoria actual si no hay mas cat. disp. chau o sino ir a la proxima (:
-        }
-        if (inscriptosCorriendo.isEmpty()) {
+        } else if (ganador != null) {
+            javax.swing.JOptionPane.showMessageDialog(rootPane, "el ganador es: " + ganador.getInscripto().getCorredor().getNombre());
+
+        } else if (inscriptosCorriendo.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(rootPane, "No quedan jugadores con Rondas Restantes");
             if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
                 finalizaPruebaLibre();
@@ -184,6 +180,8 @@ public class FrmTorneo extends javax.swing.JFrame {
         lblEstadoGlobal.setText("Estado Actual: " + competenciaActual.getTipoCompetencia().getDescripcion() + " Competicion Ronda: " + competenciaActual.getNumeroRonda());
         recargaTblCorredores();
         recargaTblTiempos();
+        recargaCategorias();
+        //todo check que pasa al final
     }
 
     private void agregarCorredor() {
@@ -193,8 +191,6 @@ public class FrmTorneo extends javax.swing.JFrame {
         diag.dispose();
         if (!diagABMInscripto.CANCELADO) {
             competenciaController.agregaNuevoInscripto(diag.getInscripto(), diag.getNroRondas());
-            // necesito la nueva lista de carriles, la nueva carrera 
-            carreraActual = competenciaController.getCarreraActual();
             recargaCarriles();
             recargaTblCorredores();
             recargaCategorias();
@@ -286,9 +282,11 @@ public class FrmTorneo extends javax.swing.JFrame {
 
         }
         if (inscriptoGanador != null) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Carrera finalizada! "
-                    + "\nGanador: " + inscriptoGanador.getNumeroGenerado()
-                    + "\nNombre: " + inscriptoGanador.getInscripto().getCorredor().getNombre());
+            if (MUESTRA_MENSAJES) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Carrera finalizada! "
+                        + "\nGanador: " + inscriptoGanador.getNumeroGenerado()
+                        + "\nNombre: " + inscriptoGanador.getInscripto().getCorredor().getNombre());
+            }
             btnNextBattle.setEnabled(true);
             recargaTblCorredores();
             if (chkProxCarrAuto.isSelected()) {

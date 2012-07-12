@@ -708,7 +708,7 @@ public class frmCarrera extends javax.swing.JFrame {
             competenciaActual = serviceManager.getCompetenciaActual(categoriaSeleccionada);
             lblEstadoGlobal.setText("Estado Actual: " + competenciaActual.getTipoCompetencia().getDescripcion() + " Competicion Ronda: " + competenciaActual.getNumeroRonda());
             //System.err.println("proxima carrera... [inscriptos]");
-            inscriptosCorriendo = serviceManager.getEstadoInscriptosCompetencia(competenciaActual, EstadoInscriptoCompetenciaCarrera.ESPERANDO, categoriaSeleccionada);
+            inscriptosCorriendo = serviceManager.getEstadoInscriptosCompetenciaCarrera(competenciaActual, EstadoInscriptoCompetenciaCarrera.ESPERANDO, categoriaSeleccionada);
             // es mas o menos la misma logica de prox. carrera.. 
             //reinicio att.
             carreraActual = null;
