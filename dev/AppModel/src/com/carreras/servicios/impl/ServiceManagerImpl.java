@@ -219,4 +219,9 @@ public class ServiceManagerImpl implements ServiceManager {
     public Integer saveCategoria(Categoria categoria) {
         return categoriaManager.save(categoria);
     }
+
+    @Override
+    public Inscripto getOneInscripto(Integer id) {
+        return inscriptoManager.getOne(id);
+    }
 }

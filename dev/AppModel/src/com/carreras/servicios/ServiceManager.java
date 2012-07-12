@@ -85,4 +85,6 @@ public interface ServiceManager {
     public List<InscriptoCompetencia> getEstadoInscriptosCompetenciaCarrera(Competencia competenciaActual, EstadoInscriptoCompetenciaCarrera estadoInscriptoCompetenciaCarrera, Categoria categoria);
 
     public List<InscriptoCompetencia> getEstadoCompetencia(Competencia competencia, Categoria categoria, EstadoCompetencia estado);
+    
+    public Inscripto getOneInscripto(Integer id);
 }
