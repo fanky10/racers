@@ -4,8 +4,21 @@
  */
 package com.carreras.common.emulador;
 
+import com.carreras.common.csv.CSVFileRead;
+import com.carreras.common.csv.TiempoVO;
 import com.carreras.common.util.StringUtil;
 import com.carreras.common.util.TiemposHelper;
+import com.carreras.common.util.Utilidades;
+import com.carreras.gui.NotEditableTableModel;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,9 +26,59 @@ import com.carreras.common.util.TiemposHelper;
  */
 public class FrmEmulador extends javax.swing.JFrame {
 
+    private List<TiempoVO> tiemposCargados = new ArrayList<TiempoVO>();
+    private Integer rowActual = -1;
+
     /** Creates new form FrmEmular */
     public FrmEmulador() {
         initComponents();
+        init();
+    }
+
+    private void init() {
+        tblTiempos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblTiempos.setAutoCreateRowSorter(false);
+        tblTiempos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (event.getValueIsAdjusting()) {
+                    return;
+                }
+                tiempo_seleccionado();
+
+            }
+        ;
+        });
+        cargaTablaTiempos();
+    }
+
+    private void cargaTablaTiempos() {
+        //Utilidades.scrollToVisible(tblEstadoCorredores, linea_corriendo, 0);
+        final DefaultTableModel tmodel = new NotEditableTableModel();
+        if (tiemposCargados.isEmpty()) {
+            tmodel.setColumnIdentifiers(new Object[]{"Sin Datos"});
+            tblTiempos.setModel(tmodel);
+            btnSiguiente.setEnabled(false);
+        } else {
+            tmodel.setColumnIdentifiers(new Object[]{"Reaccion", "Cien", "Fin"});
+            for (TiempoVO t : tiemposCargados) {
+                tmodel.addRow(new Object[]{t.getTiempoRaccion(), t.getTiempoCien(), t.getTiempoFin()});
+            }
+            btnSiguiente.setEnabled(true);
+        }
+        tblTiempos.setModel(tmodel);
+    }
+
+    private void tiempo_seleccionado() {
+        int idx = tblTiempos.getSelectedRow();
+        if (idx < 0) {
+            return;
+        }
+        TiempoVO tiempo = tiemposCargados.get(idx);
+        txtReaccion.setText(tiempo.getTiempoRaccion().toString());
+        txtCienMetros.setText(tiempo.getTiempoCien().toString());
+        txtFin.setText(tiempo.getTiempoFin().toString());
     }
 
     private Double[] getTiemposIngresados() {
@@ -38,8 +101,8 @@ public class FrmEmulador extends javax.swing.JFrame {
         String tiempoFin = txtFin.getText();
         Double[] tiempos = null;
         if (chkTiempoFinAleatorio.isSelected() || StringUtil.isEmpty(tiempoFin)) {
-            tiempos = TiemposHelper.getTiemposAleatorios();   
-        }else {
+            tiempos = TiemposHelper.getTiemposAleatorios();
+        } else {
             tiempos = TiemposHelper.getTiemposTiempoFin(Double.parseDouble(tiempoFin));
         }
         txtReaccion.setText(tiempos[0].toString());
@@ -47,6 +110,26 @@ public class FrmEmulador extends javax.swing.JFrame {
         txtFin.setText(tiempos[2].toString());
 
 
+    }
+
+    private void cargaArchivo() {
+        try {
+            tiemposCargados = CSVFileRead.getTiempos();
+            cargaTablaTiempos();
+        } catch (IOException ex) {
+            System.err.println("ioex: " + ex.getMessage());
+        }
+    }
+
+    private void siguienteTiempo() {
+        int idx = tblTiempos.getSelectedRow();
+        Integer selectedRow = 0;
+        //si estoy en alguno valido
+        if (idx >= 0 && idx + 1 != tiemposCargados.size()) {
+            selectedRow = idx + 1;
+        }
+        tblTiempos.setRowSelectionInterval(selectedRow, selectedRow);
+        Utilidades.scrollToVisible(tblTiempos, selectedRow, 0);
     }
 
     /** This method is called from within the constructor to
@@ -68,6 +151,7 @@ public class FrmEmulador extends javax.swing.JFrame {
         lblEstado = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         btnAutoGen = new javax.swing.JButton();
+        btnSiguiente = new javax.swing.JButton();
         btnCarril1 = new javax.swing.JButton();
         btnCarril2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -75,7 +159,7 @@ public class FrmEmulador extends javax.swing.JFrame {
         chkRotura = new javax.swing.JCheckBox();
         chkAdelantamiento = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTiempos = new javax.swing.JTable();
         jToolBar1 = new javax.swing.JToolBar();
         btnLoad = new javax.swing.JButton();
 
@@ -109,6 +193,14 @@ public class FrmEmulador extends javax.swing.JFrame {
         });
         jPanel2.add(btnAutoGen);
 
+        btnSiguiente.setText("Siguiente ");
+        btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSiguienteActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSiguiente);
+
         btnCarril1.setText("Enviar a Carril 1");
         btnCarril1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -137,7 +229,7 @@ public class FrmEmulador extends javax.swing.JFrame {
         chkAdelantamiento.setText("Adelantamiento");
         jPanel3.add(chkAdelantamiento);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTiempos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -148,7 +240,7 @@ public class FrmEmulador extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTiempos);
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
@@ -157,6 +249,11 @@ public class FrmEmulador extends javax.swing.JFrame {
         btnLoad.setFocusable(false);
         btnLoad.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnLoad.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoadActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnLoad);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -213,6 +310,14 @@ public class FrmEmulador extends javax.swing.JFrame {
         autoGeneraTiempos();
     }//GEN-LAST:event_btnAutoGenActionPerformed
 
+    private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
+        cargaArchivo();
+    }//GEN-LAST:event_btnLoadActionPerformed
+
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        siguienteTiempo();
+    }//GEN-LAST:event_btnSiguienteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -253,6 +358,7 @@ public class FrmEmulador extends javax.swing.JFrame {
     private javax.swing.JButton btnCarril1;
     private javax.swing.JButton btnCarril2;
     private javax.swing.JButton btnLoad;
+    private javax.swing.JButton btnSiguiente;
     private javax.swing.JCheckBox chkAdelantamiento;
     private javax.swing.JCheckBox chkRotura;
     private javax.swing.JCheckBox chkTiempoFinAleatorio;
@@ -263,9 +369,9 @@ public class FrmEmulador extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblEstado;
+    private javax.swing.JTable tblTiempos;
     private javax.swing.JTextField txtCienMetros;
     private javax.swing.JTextField txtFin;
     private javax.swing.JTextField txtReaccion;
