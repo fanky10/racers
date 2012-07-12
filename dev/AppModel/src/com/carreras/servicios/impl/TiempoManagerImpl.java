@@ -6,6 +6,7 @@ package com.carreras.servicios.impl;
 
 import com.carreras.config.HibernateUtil;
 import com.carreras.dominio.modelo.Tiempo;
+import com.carreras.dominio.modelo.TipoTiempo;
 import com.carreras.servicios.TiempoManager;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -113,7 +114,8 @@ public class TiempoManagerImpl implements TiempoManager {
             sbQuery.append(" FROM " + Tiempo.class.getName()+" t");
             sbQuery.append(" WHERE t.carril.inscriptoCompetencia.inscripto.id = "+idInscripto);
             sbQuery.append(" AND  t.carril.inscriptoCompetencia.competencia.torneo.id = "+idTorneo);
-            sbQuery.append(" ORDER BY t.tiempo desc");
+            sbQuery.append(" AND  t.tipoTiempo.id = "+TipoTiempo.ID_TIEMPO_FIN);
+            sbQuery.append(" ORDER BY t.tiempo asc");
             org.hibernate.Query q = session.createQuery(sbQuery.toString());
             q.setMaxResults(1);
             List<Tiempo> tiempos = q.list();
