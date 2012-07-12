@@ -134,14 +134,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAutoGenActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnSiguiente">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Siguiente "/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSiguienteActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JButton" name="btnCarril1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Enviar a Carril 1"/>
@@ -188,6 +180,14 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Adelantamiento"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="chkSiguienteTiempo">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Siguiente Tiempo"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkSiguienteTiempoActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

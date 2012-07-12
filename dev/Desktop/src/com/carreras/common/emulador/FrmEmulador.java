@@ -36,6 +36,7 @@ public class FrmEmulador extends javax.swing.JFrame {
     }
 
     private void init() {
+        cargaArchivo();
         tblTiempos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblTiempos.setAutoCreateRowSorter(false);
         tblTiempos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -54,18 +55,17 @@ public class FrmEmulador extends javax.swing.JFrame {
     }
 
     private void cargaTablaTiempos() {
-        //Utilidades.scrollToVisible(tblEstadoCorredores, linea_corriendo, 0);
         final DefaultTableModel tmodel = new NotEditableTableModel();
         if (tiemposCargados.isEmpty()) {
             tmodel.setColumnIdentifiers(new Object[]{"Sin Datos"});
             tblTiempos.setModel(tmodel);
-            btnSiguiente.setEnabled(false);
+            chkSiguienteTiempo.setEnabled(false);
         } else {
             tmodel.setColumnIdentifiers(new Object[]{"Reaccion", "Cien", "Fin"});
             for (TiempoVO t : tiemposCargados) {
                 tmodel.addRow(new Object[]{t.getTiempoRaccion(), t.getTiempoCien(), t.getTiempoFin()});
             }
-            btnSiguiente.setEnabled(true);
+            chkSiguienteTiempo.setEnabled(true);
         }
         tblTiempos.setModel(tmodel);
     }
@@ -94,6 +94,9 @@ public class FrmEmulador extends javax.swing.JFrame {
         MensajeCarril mensajeCarril = new MensajeCarril(nroCarril, getTiemposIngresados());
         boolean sent = ArduinoTCPClient.sendCommand(mensajeCarril);
         lblEstado.setText(sent ? "Mensaje Enviado" : "Mensaje No Enviado");
+        if(chkSiguienteTiempo.isSelected()){
+            siguienteTiempo();
+        }
     }
 
     private void autoGeneraTiempos() {
@@ -116,6 +119,9 @@ public class FrmEmulador extends javax.swing.JFrame {
         try {
             tiemposCargados = CSVFileRead.getTiempos();
             cargaTablaTiempos();
+            if (!tiemposCargados.isEmpty()) {
+                chkSiguienteTiempo.setSelected(true);
+            }
         } catch (IOException ex) {
             System.err.println("ioex: " + ex.getMessage());
         }
@@ -151,13 +157,13 @@ public class FrmEmulador extends javax.swing.JFrame {
         lblEstado = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         btnAutoGen = new javax.swing.JButton();
-        btnSiguiente = new javax.swing.JButton();
         btnCarril1 = new javax.swing.JButton();
         btnCarril2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         chkTiempoFinAleatorio = new javax.swing.JCheckBox();
         chkRotura = new javax.swing.JCheckBox();
         chkAdelantamiento = new javax.swing.JCheckBox();
+        chkSiguienteTiempo = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTiempos = new javax.swing.JTable();
         jToolBar1 = new javax.swing.JToolBar();
@@ -193,14 +199,6 @@ public class FrmEmulador extends javax.swing.JFrame {
         });
         jPanel2.add(btnAutoGen);
 
-        btnSiguiente.setText("Siguiente ");
-        btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSiguienteActionPerformed(evt);
-            }
-        });
-        jPanel2.add(btnSiguiente);
-
         btnCarril1.setText("Enviar a Carril 1");
         btnCarril1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,6 +226,14 @@ public class FrmEmulador extends javax.swing.JFrame {
 
         chkAdelantamiento.setText("Adelantamiento");
         jPanel3.add(chkAdelantamiento);
+
+        chkSiguienteTiempo.setText("Siguiente Tiempo");
+        chkSiguienteTiempo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkSiguienteTiempoActionPerformed(evt);
+            }
+        });
+        jPanel3.add(chkSiguienteTiempo);
 
         tblTiempos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -314,9 +320,11 @@ public class FrmEmulador extends javax.swing.JFrame {
         cargaArchivo();
     }//GEN-LAST:event_btnLoadActionPerformed
 
-    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        siguienteTiempo();
-    }//GEN-LAST:event_btnSiguienteActionPerformed
+    private void chkSiguienteTiempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkSiguienteTiempoActionPerformed
+        if (chkSiguienteTiempo.isSelected() && tblTiempos.getSelectedRow()<0) {
+            siguienteTiempo();
+        }
+    }//GEN-LAST:event_chkSiguienteTiempoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -358,9 +366,9 @@ public class FrmEmulador extends javax.swing.JFrame {
     private javax.swing.JButton btnCarril1;
     private javax.swing.JButton btnCarril2;
     private javax.swing.JButton btnLoad;
-    private javax.swing.JButton btnSiguiente;
     private javax.swing.JCheckBox chkAdelantamiento;
     private javax.swing.JCheckBox chkRotura;
+    private javax.swing.JCheckBox chkSiguienteTiempo;
     private javax.swing.JCheckBox chkTiempoFinAleatorio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

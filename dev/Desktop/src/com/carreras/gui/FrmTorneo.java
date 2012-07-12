@@ -173,7 +173,7 @@ public class FrmTorneo extends javax.swing.JFrame {
             recargaTblTiempos();
             recargaCategorias();
             if(competenciaController.getCategorias().isEmpty()){
-                javax.swing.JOptionPane.showMessageDialog(rootPane, "Se han finalizado con todas las categorias - Fin");
+                javax.swing.JOptionPane.showMessageDialog(rootPane, "Se han finalizado con todas las categorias - The end");
                 System.exit(0);
             }
             return ;
