@@ -181,11 +181,9 @@ public class FrmTorneo extends javax.swing.JFrame {
         recargaTblCorredores();
         recargaTblTiempos();
         recargaCategorias();
-        //todo check que pasa al final
     }
 
     private void agregarCorredor() {
-
         diagABMInscripto diag = new diagABMInscripto(this, competenciaController.getInscriptosSeleccionados());
         diag.setVisible(true);
         diag.dispose();
@@ -412,6 +410,7 @@ public class FrmTorneo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnAgregarCorredor = new javax.swing.JButton();
         btnFinInscripcion = new javax.swing.JButton();
+        btnNuevaRonda = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEstadoCorredores = new javax.swing.JTable();
         cmbCategoria = new javax.swing.JComboBox();
@@ -476,6 +475,14 @@ public class FrmTorneo extends javax.swing.JFrame {
         });
         jPanel1.add(btnFinInscripcion);
 
+        btnNuevaRonda.setText("Nueva Ronda");
+        btnNuevaRonda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaRondaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnNuevaRonda);
+
         tblEstadoCorredores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"Carrera Finalizada", "", null},
@@ -501,9 +508,9 @@ public class FrmTorneo extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
-            .add(cmbCategoria, 0, 364, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+            .add(cmbCategoria, 0, 446, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -520,14 +527,12 @@ public class FrmTorneo extends javax.swing.JFrame {
 
         tblTiempos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Carrera Finalizada", "", null},
-                {"Corriendo", null, null},
-                {"Corriendo", null, null},
-                {"Esperando", null, null},
-                {null, null, null}
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Estado", "Numero", "Categoria"
+                "Esperando Tiempos"
             }
         ));
         jScrollPane2.setViewportView(tblTiempos);
@@ -559,8 +564,8 @@ public class FrmTorneo extends javax.swing.JFrame {
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE))
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE))
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE))
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -573,7 +578,7 @@ public class FrmTorneo extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Carrera Actual"));
 
-        jPanel7.setLayout(new java.awt.GridLayout());
+        jPanel7.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jPanel8.setLayout(new java.awt.GridLayout(0, 2));
@@ -641,9 +646,9 @@ public class FrmTorneo extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 598, Short.MAX_VALUE)
+            .add(0, 516, Short.MAX_VALUE)
             .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE))
+                .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -709,6 +714,10 @@ public class FrmTorneo extends javax.swing.JFrame {
         filtraCorredores();
     }//GEN-LAST:event_cmbCategoriaActionPerformed
 
+    private void btnNuevaRondaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaRondaActionPerformed
+        nuevaRonda();
+    }//GEN-LAST:event_btnNuevaRondaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -749,6 +758,7 @@ public class FrmTorneo extends javax.swing.JFrame {
     private javax.swing.JButton btnFinInscripcion;
     private javax.swing.JButton btnIniciarComunicacion;
     private javax.swing.JButton btnNextBattle;
+    private javax.swing.JButton btnNuevaRonda;
     private javax.swing.JCheckBox chkProxCarrAuto;
     private javax.swing.JComboBox cmbCategoria;
     private javax.swing.JLabel jLabel1;

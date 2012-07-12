@@ -71,7 +71,6 @@ public class CompetenciaController {
         competenciaActual.setTipoCompetencia(TipoCompetencia.LIBRE);
         competenciaActual.setTorneo(torneo);
         competenciaActual.setId(serviceManager.saveCompetencia(competenciaActual));
-        categorias = serviceManager.getCategoriasEnUso(competenciaActual);
     }
 
     public void agregaNuevoInscripto(Inscripto inscripto, Integer nroRondas) {
@@ -94,6 +93,7 @@ public class CompetenciaController {
             inscriptosCorriendo.add(inscriptoCompetencia);
             agregaCarril(inscriptoCompetencia);
         }//si no participa ni me gasto (:
+        categorias = serviceManager.getCategoriasEnUso(competenciaActual);
     }
 
     /**
@@ -176,6 +176,7 @@ public class CompetenciaController {
         if (inscriptosCorriendo.isEmpty()) {
             throw new IllegalArgumentException("al generar finalizar la competencia libre no pueden quedarse sin inscriptos!!");
         }
+        categorias = serviceManager.getCategoriasEnUso(competenciaActual);
     }
 
     public Map recargaTiempos() {
@@ -228,7 +229,9 @@ public class CompetenciaController {
                 i++;
             }
             //TODO: check if this is winner
-            inscriptoGanador = carriles.get(0).getInscriptoCompetencia();
+            if(!carriles.isEmpty()){
+                inscriptoGanador = carriles.get(0).getInscriptoCompetencia();
+            }
         }
 
         Map modelMap = new HashMap();
@@ -266,14 +269,6 @@ public class CompetenciaController {
     }
 
     public Map nuevaRonda(Categoria categoriaSeleccionada) {
-        //traigo todos los inscriptos filtrados s/la competencia y categoria que acaba de terminar
-//        List<InscriptoCompetencia> nuevosInscriptos = serviceManager.getInscriptosCompetencia(competenciaActual, categoriaSeleccionada);
-
-        // si en vez de traerlos de la db (que ya estan felizmente guardados)
-        // usando un helper que nos filtre a todos los corredores actuales.
-        // que pasa si cambia de categoria y filtra bichos nuevos..?
-        // let's see!
-        //TODO: fix this
         Map nuevaRondaMap = nuevaRondaInscriptos(categoriaSeleccionada);
         List<InscriptoCompetencia> nuevosInscriptos = (List<InscriptoCompetencia>) nuevaRondaMap.get("nuevosInscriptos");
         Boolean sonFinalistas = (Boolean) nuevaRondaMap.get("sonFinalistas");
@@ -322,7 +317,7 @@ public class CompetenciaController {
                 if (inscriptoCompetencia.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
                     continue; //buscamos el proximo
                 }
-            } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && InscriptosCompetenciaHelper.getGanador(inscriptoWins)!=null) {
+            } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && rondaActual == 3) {
                 modelMap.put("ganadorCompetencia", InscriptosCompetenciaHelper.getGanador(inscriptoWins));
                 finalizaCategoria(categoriaSeleccionada);
                 break;

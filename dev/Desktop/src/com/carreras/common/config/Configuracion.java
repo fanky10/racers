@@ -32,7 +32,7 @@ public class Configuracion {
     //system path as default user dir
     private static String pathConfig=null;
     private static Configuracion singleConfiguration = null;
-    private static final String CONFIGURATION_PROPERTIES_FILE = "configuration.properties";
+    private static final String CONFIGURATION_PROPERTIES_FILE = "configuracion.properties";
     public static final String PROPERTIES_PACKAGE = "/com/carreras/properties/";
     public static Configuracion getInstance(){
         if(singleConfiguration == null){
@@ -76,6 +76,7 @@ public class Configuracion {
             return properties.getProperty(key);
         }catch(java.io.IOException e){
             //ignored --que mas puedo hacer..?
+            CarrerasLogger.info(Configuracion.class, "ioexception loading configuration file: "+e.getMessage());
             return defaultValue;
         }finally{
             try{
@@ -101,7 +102,7 @@ public class Configuracion {
     }
     public static Boolean isMuestraMensajes(){
         final String key = "muestra_mensajes";
-        final String defaultValue = "0";//false
+        final String defaultValue = "1";//false
         String value = getCurrentInnerValue(PROPERTIES_PACKAGE + CONFIGURATION_PROPERTIES_FILE, key, null);
         if(value==null){
             value = getConfigurationValue(CONFIGURATION_PROPERTIES_FILE, key, defaultValue);

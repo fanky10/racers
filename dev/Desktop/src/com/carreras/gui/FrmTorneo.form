@@ -66,9 +66,9 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jPanel1" alignment="1" pref="364" max="32767" attributes="1"/>
-              <Component id="jScrollPane1" alignment="0" pref="364" max="32767" attributes="1"/>
-              <Component id="cmbCategoria" alignment="0" pref="364" max="32767" attributes="0"/>
+              <Component id="jPanel1" alignment="1" max="32767" attributes="1"/>
+              <Component id="jScrollPane1" alignment="0" pref="446" max="32767" attributes="1"/>
+              <Component id="cmbCategoria" alignment="0" pref="446" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -110,6 +110,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFinInscripcionActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnNuevaRonda">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Nueva Ronda"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNuevaRondaActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -182,9 +190,9 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="558" max="32767" attributes="1"/>
+                          <Component id="jScrollPane2" pref="476" max="32767" attributes="1"/>
                       </Group>
-                      <Component id="jPanel4" alignment="1" pref="578" max="32767" attributes="1"/>
+                      <Component id="jPanel4" alignment="1" pref="496" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -211,23 +219,18 @@
             <Component class="javax.swing.JTable" name="tblTiempos">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="3" rowCount="5">
-                    <Column editable="true" title="Estado" type="java.lang.Object">
-                      <Data value="Carrera Finalizada"/>
-                      <Data value="Corriendo"/>
-                      <Data value="Corriendo"/>
-                      <Data value="Esperando"/>
-                      <Data value="null"/>
-                    </Column>
-                    <Column editable="true" title="Numero" type="java.lang.Object">
-                      <Data value=""/>
-                      <Data value="null"/>
-                      <Data value="null"/>
-                      <Data value="null"/>
-                      <Data value="null"/>
-                    </Column>
-                    <Column editable="true" title="Categoria" type="java.lang.Object"/>
+                  <Table columnCount="1" rowCount="3">
+                    <Column editable="true" title="Esperando Tiempos" type="java.lang.Object"/>
                   </Table>
+                </Property>
+                <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                  <TableColumnModel selectionModel="0">
+                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                      <Title/>
+                      <Editor/>
+                      <Renderer/>
+                    </Column>
+                  </TableColumnModel>
                 </Property>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
@@ -277,9 +280,9 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="598" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="516" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                  <Component id="jPanel7" alignment="0" pref="598" max="32767" attributes="0"/>
+                  <Component id="jPanel7" alignment="0" pref="516" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
