@@ -80,7 +80,7 @@ public class InscriptoCompetenciaController {
                 }
             } else if (competencia.getTipoCompetencia() == TipoCompetencia.FINAL && rondaActual == 3) {
                 //que se supone que queremos?
-                modelMap.put("ganadorCompetencia", InscriptosCompetenciaHelper.getGanador(inscriptoWins));
+                modelMap.put("ganadorCompetencia", InscriptosCompetenciaHelper.getGanador(null));
             } else if (competencia.getTipoCompetencia() == TipoCompetencia.FINAL) {
                 //still
                 //no hay mucho que hacer... solo dejar que se maten! :D

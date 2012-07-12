@@ -58,7 +58,7 @@ public class CompetenciaController {
     //carriles disponibles
     private List<com.carreras.dominio.modelo.Carril> carriles = new ArrayList<com.carreras.dominio.modelo.Carril>();
     //cant de veces que va ganando cada finalista
-    private Map<InscriptoCompetencia, Integer> inscriptoWins = new HashMap<InscriptoCompetencia, Integer>();
+    private Map<Integer, Integer> inscriptoWins = new HashMap<Integer, Integer>();
     //lista de categorias para el torneo
     private List<Categoria> categorias = new ArrayList<Categoria>();
 
@@ -229,7 +229,7 @@ public class CompetenciaController {
                 i++;
             }
             //TODO: check if this is winner
-            if(!carriles.isEmpty()){
+            if (!carriles.isEmpty()) {
                 inscriptoGanador = carriles.get(0).getInscriptoCompetencia();
             }
         }
@@ -269,19 +269,36 @@ public class CompetenciaController {
     }
 
     public Map nuevaRonda(Categoria categoriaSeleccionada) {
+        if(competenciaActual==null){
+            //hay que generar una nueva
+            //throw new IllegalArgumentException("no se puede armar una nueva ronda sin competencia")
+            filtraCorredores(categoriaSeleccionada);
+            return new HashMap();
+        }
         Map nuevaRondaMap = nuevaRondaInscriptos(categoriaSeleccionada);
         List<InscriptoCompetencia> nuevosInscriptos = (List<InscriptoCompetencia>) nuevaRondaMap.get("nuevosInscriptos");
         Boolean sonFinalistas = (Boolean) nuevaRondaMap.get("sonFinalistas");
         //reiniciamos todo
         inscriptosCorriendo = new ArrayList<InscriptoCompetencia>();
         carriles = new ArrayList<Carril>();
-        //usamos un helper que nos ayude a eliminar el que finalista de la categoria
-        int rondaActual = competenciaActual.getNumeroRonda();
-        TipoCompetencia tipoCompetencia = competenciaActual.getTipoCompetencia();
+        // por defecto es eliminatoria en una nueva ronda, excepto que se sobre escriba con la comp. actual
+        int rondaActual = 1;
+        TipoCompetencia tipoCompetencia = TipoCompetencia.ELIMINATORIA;
+        if (competenciaActual != null) {
+            rondaActual = competenciaActual.getNumeroRonda();
+            tipoCompetencia = competenciaActual.getTipoCompetencia();
+        }
         Map modelMap = new LinkedHashMap();
+        //todo: mover esto a un lugar mas conveniente
+        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && InscriptosCompetenciaHelper.getGanador(inscriptoWins) != null) {//&& rondaActual == 3) {
+            Integer idGanador = InscriptosCompetenciaHelper.getGanador(inscriptoWins);
+            Inscripto inscripto = serviceManager.getOneInscripto(idGanador);
+            modelMap.put("ganadorCompetencia", inscripto);
+            finalizaCategoria(categoriaSeleccionada);
+        }
         //chequeamos si debemos cambiar la competencia a final (:
         competenciaActual = new Competencia();
-        if (sonFinalistas && tipoCompetencia != TipoCompetencia.FINAL) {//nuevosInscriptos.size() == 2 && tipoCompetencia == TipoCompetencia.ELIMINATORIA) {
+        if (sonFinalistas && tipoCompetencia != TipoCompetencia.FINAL) {
             competenciaActual.setNumeroRonda(1);
             competenciaActual.setTipoCompetencia(TipoCompetencia.FINAL);
             competenciaActual.setTorneo(torneo);
@@ -296,48 +313,6 @@ public class CompetenciaController {
         for (InscriptoCompetencia inscriptoCompetencia : nuevosInscriptos) {
             //hay que chequear varias cosas aca:
             //a) si es comp. libre 
-            if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
-                if (inscriptoCompetencia.getCategoria().getId() == Categoria.ID_CATEGORIA_NO_CORRE) {
-                    continue; //es de esos que no corren jeje
-                } else {
-                    inscriptoCompetencia.decrementaRondasRestantes();
-                    if (inscriptoCompetencia.getRondasRestantes() == 0) {
-                        continue; //no lo agrego no le quedan rondas (:
-                    }
-                }
-            } //c) comp. elim. pero ronda == 1 separamos por estado en comp.
-            else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && rondaActual == 1) {
-                if (inscriptoCompetencia.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
-                    inscriptoCompetencia.setEstadoCompetencia(EstadoCompetencia.COMPETENCIA_GANADORES);
-                } else {
-                    inscriptoCompetencia.setEstadoCompetencia(EstadoCompetencia.COMPETENCIA_PERDEDORES);
-                }
-            } //c) si es comp. elim y nro ronda > 1 solo agregar a ganadores.
-            else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA) {
-                if (inscriptoCompetencia.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
-                    continue; //buscamos el proximo
-                }
-            } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && rondaActual == 3) {
-                modelMap.put("ganadorCompetencia", InscriptosCompetenciaHelper.getGanador(inscriptoWins));
-                finalizaCategoria(categoriaSeleccionada);
-                break;
-
-            } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL) {
-                //still
-                //no hay mucho que hacer... solo dejar que se maten! :D
-                // WII add to map winer :D
-                if (inscriptoCompetencia.getEstado() == EstadoInscriptoCompetenciaCarrera.GANADOR) {
-                    //chequeo si gano alguna vez :P
-                    if (inscriptoWins.containsKey(inscriptoCompetencia)) {
-                        int countWins = inscriptoWins.get(inscriptoCompetencia) + 1;
-                        inscriptoWins.put(inscriptoCompetencia, countWins);
-                    } else {
-                        inscriptoWins.put(inscriptoCompetencia, 1);
-                    }
-                }
-            } else {
-                throw new IllegalArgumentException("competencia desconocida... verifique argumentos!");
-            }
             inscriptoCompetencia.setCompetencia(competenciaActual);//actualizo la competencia
             inscriptoCompetencia.setEstado(EstadoInscriptoCompetenciaCarrera.ESPERANDO);
             inscriptoCompetencia.generaNumero();
@@ -432,8 +407,8 @@ public class CompetenciaController {
     private void finalizaCategoria(Categoria categoria) {
         this.carreraActual = null;
         this.competenciaActual = null;
-        this.inscriptoWins = new HashMap<InscriptoCompetencia, Integer>();
-        this.inscriptosCorriendo.clear();
+        this.inscriptoWins = new HashMap<Integer, Integer>();
+        this.inscriptosCorriendo = new ArrayList<InscriptoCompetencia>();
         this.inscriptosSeleccionados.clear();//idk
         Iterator<Categoria> it = categorias.iterator();
         while (it.hasNext()) {
@@ -441,7 +416,7 @@ public class CompetenciaController {
             if (c.equals(categoria)) {
                 it.remove();
             }
-        } 
+        }
     }
 
     /**
@@ -456,10 +431,15 @@ public class CompetenciaController {
         List<InscriptoCompetencia> nuevosInscriptos = new ArrayList<InscriptoCompetencia>();
         Boolean sonFinalistas = false;
         //si es libre o estamos en la primer ronda de la eliminatoria (donde luego se dividen en dos)
-        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE
-                || (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && competenciaActual.getNumeroRonda() == 1)) {
+        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
             nuevosInscriptos = serviceManager.getInscriptosCompetencia(competenciaActual, categoriaSeleccionada);
-        } // si por el contrario estamos eliminando bichos
+        } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && competenciaActual.getNumeroRonda() == 1) {
+            //traigo a todos, pero chequeo si ya estoy en la final (el puto caso si eran JUUUUSTO 2 jaja)
+            nuevosInscriptos = serviceManager.getInscriptosCompetencia(competenciaActual, categoriaSeleccionada);
+            if (nuevosInscriptos.size() == 2) {
+                sonFinalistas = true;
+            }
+        }// si por el contrario estamos eliminando bichos
         // traigo dos grupos de ganadores y perdedores y evaluo
         else {
             List<InscriptoCompetencia> lineaGanadores = serviceManager.getEstadoCompetencia(competenciaActual, categoriaSeleccionada, EstadoCompetencia.COMPETENCIA_GANADORES);
@@ -467,22 +447,6 @@ public class CompetenciaController {
             // si estoy tomando la actual, entonces aca tendria que resolver que hacer con c/ uno
             // si no entro en ningun otro y estoy en tipo eliminatoria entonces, delete!
             // safe use for deletition
-            if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA) {
-                Iterator<InscriptoCompetencia> iterator = lineaGanadores.iterator();
-                while (iterator.hasNext()) {
-                    InscriptoCompetencia ic = (InscriptoCompetencia) iterator.next();
-                    if (ic.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
-                        iterator.remove();
-                    }
-                }
-                iterator = lineaPerdedores.iterator();
-                while (iterator.hasNext()) {
-                    InscriptoCompetencia ic = (InscriptoCompetencia) iterator.next();
-                    if (ic.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
-                        iterator.remove();
-                    }
-                }
-            }
             if (lineaGanadores.isEmpty() && lineaPerdedores.isEmpty()) {
                 //we are in trouble
                 throw new IllegalArgumentException("ambas lineas de ganadores y perdedores vacias, what the fuck?!");
@@ -511,9 +475,53 @@ public class CompetenciaController {
                 nuevosInscriptos.addAll(lineaPerdedores);
             }
         }
-
-
         Map modelMap = new HashMap();
+        //chequear a quien eliminamos
+        Iterator<InscriptoCompetencia> iterator = nuevosInscriptos.iterator();
+        while (iterator.hasNext()) {
+            InscriptoCompetencia inscriptoCompetencia = (InscriptoCompetencia) iterator.next();
+            if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
+                if (inscriptoCompetencia.getCategoria().getId() == Categoria.ID_CATEGORIA_NO_CORRE) {
+                    //es de esos que no corren jeje
+                    iterator.remove();
+                } else {
+                    inscriptoCompetencia.decrementaRondasRestantes();
+                    if (inscriptoCompetencia.getRondasRestantes() == 0) {
+                        // lo elimino, no tiene mas rondas!
+                        iterator.remove();
+                    }
+                }
+            } //c) comp. elim. pero ronda == 1 separamos por estado en comp.
+            else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && competenciaActual.getNumeroRonda() == 1) {
+                if (inscriptoCompetencia.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
+                    inscriptoCompetencia.setEstadoCompetencia(EstadoCompetencia.COMPETENCIA_GANADORES);
+                } else {
+                    inscriptoCompetencia.setEstadoCompetencia(EstadoCompetencia.COMPETENCIA_PERDEDORES);
+                }
+            } //c) si es comp. elim y nro ronda > 1 solo agregar a ganadores.
+            else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA) {
+                if (inscriptoCompetencia.getEstado() != EstadoInscriptoCompetenciaCarrera.GANADOR) {
+                    //lo elimino, era eliminatoria :P
+                    iterator.remove();
+                }
+            } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL) {
+                //still
+                //no hay mucho que hacer... solo dejar que se maten! :D
+                // WII add to map winer :D
+                if (inscriptoCompetencia.getEstado() == EstadoInscriptoCompetenciaCarrera.GANADOR) {
+                    //chequeo si gano alguna vez :P
+                    if (inscriptoWins.containsKey(inscriptoCompetencia.getInscripto().getId())) {
+                        int countWins = inscriptoWins.get(inscriptoCompetencia.getInscripto().getId()) + 1;
+                        inscriptoWins.put(inscriptoCompetencia.getInscripto().getId(), countWins);
+                    } else {
+                        inscriptoWins.put(inscriptoCompetencia.getInscripto().getId(), 1);
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("competencia desconocida... verifique argumentos!");
+            }
+        }
+
         modelMap.put("sonFinalistas", sonFinalistas);
         modelMap.put("nuevosInscriptos", nuevosInscriptos);
         return modelMap;

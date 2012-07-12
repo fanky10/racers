@@ -24,6 +24,7 @@ import com.carreras.dominio.modelo.Categoria;
 import com.carreras.dominio.modelo.Competencia;
 import com.carreras.dominio.modelo.EstadoCompetencia;
 import com.carreras.dominio.modelo.EstadoInscriptoCompetenciaCarrera;
+import com.carreras.dominio.modelo.Inscripto;
 import com.carreras.dominio.modelo.InscriptoCompetencia;
 import com.carreras.dominio.modelo.TipoCompetencia;
 import java.awt.Color;
@@ -162,15 +163,23 @@ public class FrmTorneo extends javax.swing.JFrame {
     private void nuevaRonda() {
         Categoria categoriaSeleccionada = (Categoria) cmbCategoria.getSelectedItem();
         Map modelMap = competenciaController.nuevaRonda(categoriaSeleccionada);
-        InscriptoCompetencia ganador = (InscriptoCompetencia) modelMap.get("ganadorCompetencia");
+        Inscripto ganador = (Inscripto) modelMap.get("ganadorCompetencia");
         Competencia competenciaActual = competenciaController.getCompetenciaActual();
         List<InscriptoCompetencia> inscriptosCorriendo = competenciaController.getInscriptosCorriendo();
-        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && competenciaActual.getNumeroRonda() == 3) {
+        if (ganador != null) {
+            javax.swing.JOptionPane.showMessageDialog(rootPane, "El ganador de la categoria: "+categoriaSeleccionada.getDescripcion()+" es: " + ganador.getCorredor().getNombre());
+            javax.swing.JOptionPane.showMessageDialog(rootPane, "Seleccione una nueva categoria e inicie una nueva ronda");
+            recargaTblCorredores();
+            recargaTblTiempos();
+            recargaCategorias();
+            if(competenciaController.getCategorias().isEmpty()){
+                javax.swing.JOptionPane.showMessageDialog(rootPane, "Se han finalizado con todas las categorias - Fin");
+                System.exit(0);
+            }
+            return ;
+        } else if (competenciaActual.getTipoCompetencia() == TipoCompetencia.FINAL && competenciaActual.getNumeroRonda() == 1) {
             javax.swing.JOptionPane.showMessageDialog(rootPane, "Estamos en la final!!");
-        } else if (ganador != null) {
-            javax.swing.JOptionPane.showMessageDialog(rootPane, "el ganador es: " + ganador.getInscripto().getCorredor().getNombre());
-
-        } else if (inscriptosCorriendo.isEmpty()) {
+        } else  if (inscriptosCorriendo.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(rootPane, "No quedan jugadores con Rondas Restantes");
             if (competenciaActual.getTipoCompetencia() == TipoCompetencia.LIBRE) {
                 finalizaPruebaLibre();

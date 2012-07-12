@@ -57,31 +57,17 @@ public class InscriptosCompetenciaHelper {
         return result;
     }
     
-    public static InscriptoCompetencia getGanador(Map<InscriptoCompetencia,Integer> winnersMap){
-        List<InscriptoCompetencia> orderedListWiners = new ArrayList<InscriptoCompetencia>();
-        ValueComparator comp = new ValueComparator(winnersMap);
-        Map<InscriptoCompetencia,Integer> orderedMapWinners = new TreeMap<InscriptoCompetencia, Integer>(comp);
-        orderedMapWinners.putAll(winnersMap);
-        orderedListWiners.addAll(orderedMapWinners.keySet());
-        if(orderedListWiners!=null && !orderedListWiners.isEmpty()){
-            return orderedListWiners.get(0);
+    public static Integer getGanador(Map<Integer,Integer> winnersMap){
+        // cambio del concepto
+        for(Integer ic: winnersMap.keySet()){
+            if(winnersMap.get(ic) == 2){
+                return ic;
+            }
         }
         return null;
         
     }
-    //for testing purposes
-    public static void main(String args[]){
-        Map<InscriptoCompetencia,Integer> winnersMap = new HashMap<InscriptoCompetencia, Integer>();
-        InscriptoCompetencia insc = new InscriptoCompetencia();
-        insc.setId(1);
-        winnersMap.put(insc, 10);
-        insc = new InscriptoCompetencia();
-        insc.setId(5);
-        winnersMap.put(insc, 40);
-        InscriptoCompetencia winner = getGanador(winnersMap);
-        if(winner.getId() == 5)
-            System.out.println("success!");
-    }
+    
     /**
      * orders a map in desc order.
      */
