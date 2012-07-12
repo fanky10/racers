@@ -9,42 +9,42 @@ package com.carreras.common.csv;
  * @author Fanky10 <fanky10@gmail.com>
  */
 public class TiempoVO {
-    private Long tiempoRaccion;
-    private Long tiempoCien;
-    private Long tiempoFin;
+    private Double tiempoRaccion;
+    private Double tiempoCien;
+    private Double tiempoFin;
 
-    public TiempoVO(Long tiempoRaccion, Long tiempoCien, Long tiempoFin) {
+    public TiempoVO(Double tiempoRaccion, Double tiempoCien, Double tiempoFin) {
         this.tiempoRaccion = tiempoRaccion;
         this.tiempoCien = tiempoCien;
         this.tiempoFin = tiempoFin;
     }
     public TiempoVO(String tiempoRaccion, String tiempoCien, String tiempoFin) {
-        this.tiempoRaccion = Long.parseLong(tiempoRaccion);
-        this.tiempoCien = Long.parseLong(tiempoCien);
-        this.tiempoFin = Long.parseLong(tiempoFin);
+        this.tiempoRaccion = Double.parseDouble(tiempoRaccion);
+        this.tiempoCien = Double.parseDouble(tiempoCien);
+        this.tiempoFin = Double.parseDouble(tiempoFin);
     }
 
-    public Long getTiempoCien() {
+    public Double getTiempoCien() {
         return tiempoCien;
     }
 
-    public void setTiempoCien(Long tiempoCien) {
+    public void setTiempoCien(Double tiempoCien) {
         this.tiempoCien = tiempoCien;
     }
 
-    public Long getTiempoFin() {
+    public Double getTiempoFin() {
         return tiempoFin;
     }
 
-    public void setTiempoFin(Long tiempoFin) {
+    public void setTiempoFin(Double tiempoFin) {
         this.tiempoFin = tiempoFin;
     }
 
-    public Long getTiempoRaccion() {
+    public Double getTiempoRaccion() {
         return tiempoRaccion;
     }
 
-    public void setTiempoRaccion(Long tiempoRaccion) {
+    public void setTiempoRaccion(Double tiempoRaccion) {
         this.tiempoRaccion = tiempoRaccion;
     }
     
