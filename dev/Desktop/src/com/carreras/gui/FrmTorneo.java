@@ -18,6 +18,8 @@ import com.carreras.common.logger.CarrerasLogger;
 import com.carreras.common.util.ArduinoManager;
 import com.carreras.common.util.Utilidades;
 import com.carreras.controllers.CompetenciaController;
+import com.carreras.controllers.impl.CompetenciaControllerImplNew;
+import com.carreras.controllers.impl.CompetenciaControllerImplOrig;
 import com.carreras.dominio.modelo.Carrera;
 import com.carreras.dominio.modelo.Carril;
 import com.carreras.dominio.modelo.Categoria;
@@ -55,7 +57,7 @@ public class FrmTorneo extends javax.swing.JFrame {
     private static final int COLUMNA_CORREDOR_CATEGORIA = 2;
     //es una unica instancia para toda la competencia
     private ArduinoManager ardmgr;
-    private CompetenciaController competenciaController = new CompetenciaController();
+    private CompetenciaController competenciaController = new CompetenciaControllerImplNew();
 
     /** Creates new form FrmTorneo */
     public FrmTorneo() {
