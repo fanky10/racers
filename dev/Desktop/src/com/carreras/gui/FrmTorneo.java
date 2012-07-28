@@ -19,8 +19,6 @@ import com.carreras.common.util.ArduinoManager;
 import com.carreras.common.util.Utilidades;
 import com.carreras.controllers.CompetenciaController;
 import com.carreras.controllers.impl.CompetenciaControllerImplNew;
-import com.carreras.controllers.impl.CompetenciaControllerImplOrig;
-import com.carreras.dominio.modelo.Carrera;
 import com.carreras.dominio.modelo.Carril;
 import com.carreras.dominio.modelo.Categoria;
 import com.carreras.dominio.modelo.Competencia;
@@ -33,7 +31,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
@@ -365,7 +362,7 @@ public class FrmTorneo extends javax.swing.JFrame {
             recargaTblTiempos();
         } catch (ClassCastException ex) {
             //ignored
-            CarrerasLogger.debug(frmCarrera.class, "classCastException: " + ex.getMessage());
+            CarrerasLogger.debug(FrmTorneo.class, "classCastException: " + ex.getMessage());
         }
     }
 
@@ -396,7 +393,7 @@ public class FrmTorneo extends javax.swing.JFrame {
         } catch (NullPointerException ex) {
             System.out.println("nunca inicie el arduino");
         } catch (Throwable t) {
-            CarrerasLogger.warn(frmCarrera.class, "throwable: " + t.getMessage());
+            CarrerasLogger.warn(FrmTorneo.class, "throwable: " + t.getMessage());
         }
     }
 
