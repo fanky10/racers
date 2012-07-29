@@ -184,6 +184,12 @@ public class FrmTorneo extends javax.swing.JFrame {
                 finalizaPruebaLibre();
             }
             return;
+        }else{
+            //TODO: reordeno competidores p/cada cat y estado (algun Helper)
+            DiagOrdenaInscriptos ordenaInscriptos = new DiagOrdenaInscriptos(this, true, inscriptosCorriendo);
+            ordenaInscriptos.setVisible(true);
+            ordenaInscriptos.dispose();
+            
         }
         lblEstadoGlobal.setText("Estado Actual: " + competenciaActual.getTipoCompetencia().getDescripcion() + " Competicion Ronda: " + competenciaActual.getNumeroRonda());
         recargaTblCorredores();

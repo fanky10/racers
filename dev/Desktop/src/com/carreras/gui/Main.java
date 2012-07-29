@@ -7,7 +7,6 @@ package com.carreras.gui;
 import com.carreras.common.config.Configuracion;
 import com.carreras.common.logger.CarrerasLogger;
 import com.carreras.common.util.ApplicationInstanceManager;
-import java.sql.SQLException;
 
 /**
  *

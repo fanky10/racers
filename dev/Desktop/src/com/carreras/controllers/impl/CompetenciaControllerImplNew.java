@@ -76,6 +76,7 @@ public class CompetenciaControllerImplNew extends CompetenciaController {
     }
 
     /**
+     * TODO: cambiar el estado del inscripto a Jumped o algo asi. (ver impacto en db por los tiempos.)
      * agrega carril s/sea necesario
      * @return true carril agregado, false otherwise
      */
