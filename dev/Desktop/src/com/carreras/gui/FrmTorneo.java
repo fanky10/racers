@@ -872,6 +872,9 @@ public class FrmTorneo extends javax.swing.JFrame {
                 } else if (ic.getEstado() == EstadoInscriptoCompetenciaCarrera.CORRIENDO) {
                     renderer.setBackground(Color.BLUE);
                     return renderer;
+                } else if (ic.getEstado() == EstadoInscriptoCompetenciaCarrera.PROXIMA_RONDA) {
+                    renderer.setBackground(Color.LIGHT_GRAY);
+                    return renderer;
                 }
             } catch (java.lang.IndexOutOfBoundsException ex) {
                 //ignored!

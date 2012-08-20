@@ -70,6 +70,8 @@ public class CompetenciaControllerImpl extends CompetenciaController {
         inscriptosSeleccionados.add(inscriptoCompetencia);
         if (nroRondas > 0) {
             inscriptosCorriendo.add(inscriptoCompetencia);
+            //TODO: undead
+//            inscriptosCorriendo = InscriptosCompetenciaHelper.salteaImpares(inscriptosCorriendo,EstadoInscriptoCompetenciaCarrera.ESPERANDO);
             agregaCarril(inscriptoCompetencia);
         }//si no participa ni me gasto (:
         categorias = serviceManager.getCategoriasEnUso(competenciaActual);
@@ -236,7 +238,7 @@ public class CompetenciaControllerImpl extends CompetenciaController {
         //reinicio att.
         carreraActual = null;
         carriles = new ArrayList<Carril>();
-
+        //para c/incripto lo intenta agregar,
         for (InscriptoCompetencia ic : inscriptosCorriendo) {
             if (ic.getEstado() == EstadoInscriptoCompetenciaCarrera.ESPERANDO && !agregaCarril(ic)) {
                 break;
@@ -289,7 +291,7 @@ public class CompetenciaControllerImpl extends CompetenciaController {
             competenciaActual.setTorneo(torneo);
             competenciaActual.setId(serviceManager.saveCompetencia(competenciaActual));
         }
-
+        
         for (InscriptoCompetencia inscriptoCompetencia : nuevosInscriptos) {
             //hay que chequear varias cosas aca:
             //a) si es comp. libre 
@@ -301,6 +303,7 @@ public class CompetenciaControllerImpl extends CompetenciaController {
             inscriptosCorriendo.add(inscriptoCompetencia);
             agregaCarril(inscriptoCompetencia);
         }
+        inscriptosCorriendo = InscriptosCompetenciaHelper.salteaImpares(inscriptosCorriendo,EstadoInscriptoCompetenciaCarrera.ESPERANDO);
 
         return modelMap;
     }
@@ -505,7 +508,7 @@ public class CompetenciaControllerImpl extends CompetenciaController {
         }
         // si despues de eliminarlos estamos en la final y son dos
         // son finalistas
-        if(competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && competenciaActual.getNumeroRonda() > 1 && nuevosInscriptos.size() == 2){
+        if (competenciaActual.getTipoCompetencia() == TipoCompetencia.ELIMINATORIA && competenciaActual.getNumeroRonda() > 1 && nuevosInscriptos.size() == 2) {
             sonFinalistas = true;
         }
         //todo: check si quedo solo uno, ganador! corta la bocha (?? like what the fuck
