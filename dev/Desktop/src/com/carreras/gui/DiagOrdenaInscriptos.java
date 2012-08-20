@@ -14,11 +14,15 @@ import com.carreras.common.util.InscriptoCompetenciaHelper;
 import com.carreras.common.util.Utilidades;
 import com.carreras.dominio.modelo.Categoria;
 import com.carreras.dominio.modelo.Competencia;
+import com.carreras.dominio.modelo.EstadoCompetencia;
 import com.carreras.dominio.modelo.InscriptoCompetencia;
 import com.carreras.servicios.impl.ServiceManagerImpl;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -31,6 +35,8 @@ import javax.swing.table.DefaultTableModel;
 public class DiagOrdenaInscriptos extends javax.swing.JDialog {
 
     private List<InscriptoCompetencia> inscriptos = new ArrayList<InscriptoCompetencia>();
+    private Map<EstadoCompetencia, List<InscriptoCompetencia>> estadoInscriptos = new EnumMap<EstadoCompetencia, List<InscriptoCompetencia>>(EstadoCompetencia.class);
+    private List<InscriptoCompetencia> inscriptosSeleccionados = new ArrayList<InscriptoCompetencia>();
 
     /** Creates new form DiagOrdenaInscriptos */
     public DiagOrdenaInscriptos(java.awt.Frame parent, boolean modal, List<InscriptoCompetencia> inscriptos) {
@@ -56,30 +62,78 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
             }
         ;
         });
-        InscriptoCompetenciaHelper.suffleInscriptos(inscriptos);
+        divideInscriptos();
+        cargaComboBox();
         refreshTable();
 
     }
 
+    private void divideInscriptos() {
+        //TODO: mover a un controlador
+        if(inscriptos.size()>2){
+            for (InscriptoCompetencia ic : inscriptos) {
+                List<InscriptoCompetencia> inscriptos = null;
+                if (estadoInscriptos.containsKey(ic.getEstadoCompetencia())) {
+                    inscriptos = estadoInscriptos.get(ic.getEstadoCompetencia());
+                    inscriptos.add(ic);
+                } else {
+                    inscriptos = new ArrayList<InscriptoCompetencia>();
+                    inscriptos.add(ic);
+                    estadoInscriptos.put(ic.getEstadoCompetencia(), inscriptos);
+                }
+            }
+        }else{//estamos en la final (:
+            estadoInscriptos.put(EstadoCompetencia.COMPETENCIA_EN_FINAL, inscriptos);
+            
+        }
+    }
+
+    private void cargaComboBox() {
+        //el comboBox va a tener los estados
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        if(estadoInscriptos.keySet().size()>1){//si no hay uno solo, avisar
+            model.addElement("<Seleccione un estado competencia>");
+        }
+        for (EstadoCompetencia ec : estadoInscriptos.keySet()) {
+            model.addElement(ec);
+        }
+        cmbEstadoCompetencia.setModel(model);
+    }
+
     private void refreshTable() {
-        final DefaultTableModel tmodel = new NotEditableTableModel();
-        if (inscriptos.isEmpty()) {
-            tmodel.setColumnIdentifiers(new Object[]{"Sin Datos"});
+        //trata de ver que ha seleccionado el usuario de antemano
+        //luego con eso, refrescar la tabla
+        inscriptosSeleccionados = new ArrayList<InscriptoCompetencia>();
+        try {
+            EstadoCompetencia estadoCompetencia = (EstadoCompetencia) cmbEstadoCompetencia.getSelectedItem();
+            if (estadoInscriptos.containsKey(estadoCompetencia)) {
+                inscriptosSeleccionados = estadoInscriptos.get(estadoCompetencia);
+                InscriptoCompetenciaHelper.suffleInscriptos(inscriptosSeleccionados);
+            }
+        } catch (ClassCastException ex) {
+            //ignored
+        }
+        refreshTable(inscriptosSeleccionados);
+    }
+
+    private void refreshTable(List<InscriptoCompetencia> inscriptos) {
+        DefaultTableModel tmodel = new NotEditableTableModel();
+        if (inscriptos == null || inscriptos.isEmpty()) {
+            tmodel.setColumnIdentifiers(new Object[]{"Seleccione estado en competencia"});
         } else {
-            tmodel.setColumnIdentifiers(new Object[]{"Estado", "Numero", "Categoria"});//just for debug:, "RR"});
+            tmodel.setColumnIdentifiers(new Object[]{"Numero", "Apellido", "Nombre", "Categoria"});
             for (int idx = 0; idx < inscriptos.size(); idx++) {
                 InscriptoCompetencia ins = inscriptos.get(idx);
-                tmodel.addRow(new Object[]{ins.getEstado(), ins.getNumeroGenerado(), ins.getCategoria().getDescripcion(), ins.getRondasRestantes()});
+                tmodel.addRow(new Object[]{ins.getNumeroGenerado(), ins.getInscripto().getCorredor().getNombre(), ins.getInscripto().getCorredor().getNombre(), ins.getCategoria().getDescripcion()});
             }
         }
         tblInscriptos.setModel(tmodel);
     }
-
-    private void subirCorredor() {
+    public void subirCorredor() {
         mueveRow(-1);
     }
 
-    private void bajarCorredor() {
+    public void bajarCorredor() {
         mueveRow(1);
     }
 
@@ -93,7 +147,7 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
 
         Boolean valido = false;
         //el quiero moverme hacia adelante es mayor a cero, no debo estar en el ultimo
-        if (i > 0 && idx + 1 != inscriptos.size()) {
+        if (i > 0 && idx + 1 != inscriptosSeleccionados.size()) {
             valido = true;
 
         }//si me quiero mover hacia atras no debo estar en el primero
@@ -102,15 +156,25 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
         }
         if (valido) {
             if (i > 0) {
-                InscriptoCompetenciaHelper.mueveInscriptoFordward(inscriptos, idx);
+                InscriptoCompetenciaHelper.mueveInscriptoFordward(inscriptosSeleccionados, idx);
             } else {
-                InscriptoCompetenciaHelper.mueveInscriptoBackward(inscriptos, idx);
+                InscriptoCompetenciaHelper.mueveInscriptoBackward(inscriptosSeleccionados, idx);
             }
-            refreshTable();
+            refreshTable(inscriptosSeleccionados);
             selectedRow = idx + i;
             tblInscriptos.setRowSelectionInterval(selectedRow, selectedRow);
             Utilidades.scrollToVisible(tblInscriptos, selectedRow, 0);
         }
+    }
+
+    
+
+    public List<InscriptoCompetencia> getInscriptos() {
+        List<InscriptoCompetencia> inscriptos = new ArrayList<InscriptoCompetencia>();
+        for(EstadoCompetencia ec: estadoInscriptos.keySet()){
+            inscriptos.addAll(estadoInscriptos.get(ec));
+        }
+        return inscriptos;
     }
 
     /** This method is called from within the constructor to
@@ -123,7 +187,7 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        cmbEstadoCompetencia = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblInscriptos = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
@@ -136,8 +200,13 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel1.setText("jLabel1");
-        jPanel1.add(jLabel1);
+        cmbEstadoCompetencia.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbEstadoCompetencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbEstadoCompetenciaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cmbEstadoCompetencia);
 
         tblInscriptos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -202,8 +271,8 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
@@ -222,6 +291,10 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void cmbEstadoCompetenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEstadoCompetenciaActionPerformed
+        refreshTable();
+    }//GEN-LAST:event_cmbEstadoCompetenciaActionPerformed
     //for testing purposes
 
     public static void main(String args[]) {
@@ -239,11 +312,13 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnBajar;
     private javax.swing.JButton btnSubir;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox cmbEstadoCompetencia;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblInscriptos;
     // End of variables declaration//GEN-END:variables
+
+    
 }

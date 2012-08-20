@@ -18,7 +18,7 @@ import com.carreras.common.logger.CarrerasLogger;
 import com.carreras.common.util.ArduinoManager;
 import com.carreras.common.util.Utilidades;
 import com.carreras.controllers.CompetenciaController;
-import com.carreras.controllers.impl.CompetenciaControllerImplNew;
+import com.carreras.controllers.impl.CompetenciaControllerImpl;
 import com.carreras.dominio.modelo.Carril;
 import com.carreras.dominio.modelo.Categoria;
 import com.carreras.dominio.modelo.Competencia;
@@ -54,7 +54,7 @@ public class FrmTorneo extends javax.swing.JFrame {
     private static final int COLUMNA_CORREDOR_CATEGORIA = 2;
     //es una unica instancia para toda la competencia
     private ArduinoManager ardmgr;
-    private CompetenciaController competenciaController = new CompetenciaControllerImplNew();
+    private CompetenciaController competenciaController = new CompetenciaControllerImpl();
 
     /** Creates new form FrmTorneo */
     public FrmTorneo() {
@@ -144,15 +144,15 @@ public class FrmTorneo extends javax.swing.JFrame {
         Map modelMap = competenciaController.proximaCarrera();
         Boolean finCarreras = (Boolean) modelMap.get("finCarreras");
         if (finCarreras) {
+            Boolean nuevaRonda = true;
             if (!MUESTRA_MENSAJES) {
+                int status = javax.swing.JOptionPane.showConfirmDialog(this, "Se ha finalizado con todas las carreras disponibles \nGenere una nueva ronda o competencia", "Seleccione Accion", javax.swing.JOptionPane.OK_CANCEL_OPTION);
+                nuevaRonda = (status == javax.swing.JOptionPane.OK_OPTION);
+            }
+            if(nuevaRonda){
                 nuevaRonda();
                 return;
             }
-            int status = javax.swing.JOptionPane.showConfirmDialog(this, "Se ha finalizado con todas las carreras disponibles \nGenere una nueva ronda o competencia", "Seleccione Accion", javax.swing.JOptionPane.OK_CANCEL_OPTION);
-            if (status == javax.swing.JOptionPane.OK_OPTION) {
-                nuevaRonda();
-            }
-            return;
         }
         recargaTblCorredores();
         recargaCarriles();
@@ -165,6 +165,8 @@ public class FrmTorneo extends javax.swing.JFrame {
         Inscripto ganador = (Inscripto) modelMap.get("ganadorCompetencia");
         Competencia competenciaActual = competenciaController.getCompetenciaActual();
         List<InscriptoCompetencia> inscriptosCorriendo = competenciaController.getInscriptosCorriendo();
+        //TODO: when false?
+        Boolean hayReorden = true;
         if (ganador != null) {
             javax.swing.JOptionPane.showMessageDialog(rootPane, "El ganador de la categoria: "+categoriaSeleccionada.getDescripcion()+" es: " + ganador.getCorredor().getNombre());
             javax.swing.JOptionPane.showMessageDialog(rootPane, "Seleccione una nueva categoria e inicie una nueva ronda");
@@ -185,11 +187,23 @@ public class FrmTorneo extends javax.swing.JFrame {
             }
             return;
         }else{
+            //unknown exception?
+        }
+        if(hayReorden){
+            //luego de recategorizacion.
             //TODO: reordeno competidores p/cada cat y estado (algun Helper)
+            // buscar nueva carrera.
+            // reordenar wo/ estado carrera.
             DiagOrdenaInscriptos ordenaInscriptos = new DiagOrdenaInscriptos(this, true, inscriptosCorriendo);
             ordenaInscriptos.setVisible(true);
             ordenaInscriptos.dispose();
-            
+            //reiniciamos los inscriptos y hacemos una nueva carrera (:
+            inscriptosCorriendo = ordenaInscriptos.getInscriptos();
+            for(InscriptoCompetencia ic: inscriptosCorriendo){
+                ic.setEstado(EstadoInscriptoCompetenciaCarrera.ESPERANDO);
+            }
+            competenciaController.setInscriptosCorriendo(inscriptosCorriendo);
+            proximaCarrera();
         }
         lblEstadoGlobal.setText("Estado Actual: " + competenciaActual.getTipoCompetencia().getDescripcion() + " Competicion Ronda: " + competenciaActual.getNumeroRonda());
         recargaTblCorredores();

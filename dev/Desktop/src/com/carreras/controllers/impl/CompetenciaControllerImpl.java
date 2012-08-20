@@ -39,7 +39,7 @@ import java.util.Map;
  *
  * @author Fanky10 <fanky10@gmail.com>
  */
-public class CompetenciaControllerImplNew extends CompetenciaController {
+public class CompetenciaControllerImpl extends CompetenciaController {
 
     public void iniciaTorneo() {
         torneo = new Torneo();
