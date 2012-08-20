@@ -11,7 +11,7 @@ package com.carreras.dominio.modelo;
  * al inicio sin definicion y luego como ganador o como perdedor
  */
 public enum EstadoCompetencia {
-    COMPETENCIA_GANADORES(1, "Ganador"),COMPETENCIA_PERDEDORES(2,"Perdedor"),COMPETENCIA_NO_DEFINIDA(3, "Sin definicion");
+    COMPETENCIA_GANADORES(1, "Ganador"),COMPETENCIA_PERDEDORES(2,"Perdedor"),COMPETENCIA_NO_DEFINIDA(3, "Sin definicion"),COMPETENCIA_EN_FINAL(3, "Finalistas");
     private Integer id;
     private String descripcion;
 
