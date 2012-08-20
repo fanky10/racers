@@ -54,3 +54,4 @@ dev/.metadata
 #deployment files #
 ###############
 deploy/*
+dev/Desktop/dist-build/*
