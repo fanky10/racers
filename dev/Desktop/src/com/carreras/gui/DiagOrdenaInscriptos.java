@@ -44,6 +44,7 @@ public class DiagOrdenaInscriptos extends javax.swing.JDialog {
         this.inscriptos = inscriptos;
         initComponents();
         init();
+        setLocationRelativeTo(null);
     }
 
     private void init() {
