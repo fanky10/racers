@@ -46,7 +46,9 @@ public class frmMain extends javax.swing.JFrame {
     }
     private void cargar_carrera(){
         throw new UnsupportedOperationException("not supported yet");
-        
+    }
+    private void loadArduinoGUI(){
+        arduino.frmPpal.main(new String[]{});
     }
 
     /** This method is called from within the constructor to
@@ -87,10 +89,15 @@ public class frmMain extends javax.swing.JFrame {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        jButton3.setText("Opc Menu 1");
+        jButton3.setText("Herramientas");
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton3);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
@@ -122,6 +129,10 @@ public class frmMain extends javax.swing.JFrame {
     private void btnContinuarCarreraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarCarreraActionPerformed
         cargar_carrera();
     }//GEN-LAST:event_btnContinuarCarreraActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        loadArduinoGUI();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
