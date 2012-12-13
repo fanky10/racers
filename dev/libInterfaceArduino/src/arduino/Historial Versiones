@@ -1,0 +1,11 @@
+************HISTORIA DE VERSIONES DE LIBRERIA DE CONECCION ARDUINO***************
+**v0.03*
+    2011-10-30 - fanky10 - se hizo protected el atributo arduino_event_listener de la clase arduino.Arduino para poder
+        extender de la misma y asi poder darle distintas funcionalidades
+**v0.02*
+    se agrando el protocolo por lo tanto se preparo la libreria para los nuevos mensajes:
+        adelantamiento y rotura
+**
+**v0.01*
+    primera implementacion: nada que acotar por ahora
+**

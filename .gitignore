@@ -31,6 +31,7 @@ log.txt
 # Logs and databases #
 ######################
 *.log
+*.csv
 #*.sql
 #*.sqlite
 
@@ -41,17 +42,35 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-#Eclipse generated files #
+#IDE generated files #
 ####################
 dev/.metadata
 /dev/AppModel/dist/
 /dev/AppModel/build/
+/dev/AppModel/nbproject/private/
+
 /dev/Desktop/build/
 /dev/Desktop/dist/
 /dev/Desktop/nbproject/private/
-/dev/AppModel/nbproject/private/
+
+/dev/libInterfaceArduino/build/
+/dev/libInterfaceArduino/dist/
+/dev/libInterfaceArduino/nbproject/private/
+
+
+
 
 #deployment files #
 ###############
 deploy/*
 dev/Desktop/dist-build/*
+
+dev/libInterfaceArduino/nbproject/project.xml
+
+dev/libInterfaceArduino/nbproject/project.properties
+
+dev/libInterfaceArduino/nbproject/build-impl.xml
+
+dev/libInterfaceArduino/nbproject/genfiles.properties
+
+dev/Desktop/data/tiempos.csv
